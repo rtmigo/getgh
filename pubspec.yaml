@@ -16,4 +16,5 @@ dev_dependencies:
 
 dependencies:
   args: ^2.3.1
+  crypto: ^3.0.2
 
