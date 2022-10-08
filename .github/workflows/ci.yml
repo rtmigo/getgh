@@ -49,7 +49,8 @@ jobs:
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
-      - name: Get target executable name    
+      - name: Get target executable name
+        run: |
           echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
 
       - name: Archive executables
