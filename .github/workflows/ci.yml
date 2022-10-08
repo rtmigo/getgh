@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.version.outputs.ARTIFACT_NAME }}
-          path: build/ghcp.exe
+          path: build/*
           retention-days: 5
 
 
@@ -105,6 +105,9 @@ jobs:
         # needed for get version
         with:
           sdk: 2.18.0
+
+      - name: Install Dart dependencies
+        run: dart pub get
 
       - name: Get the project version
         run: |
