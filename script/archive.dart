@@ -9,7 +9,7 @@ import 'package:yaml/yaml.dart';
 
 final ver = loadYaml(File("pubspec.yaml").readAsStringSync())["version"];
 
-String outerName() => "ghcp_${ver}_${Platform.operatingSystem}";
+String outerName() => "ghcp_${Platform.operatingSystem}";
 
 String innerName() => "ghcp${Platform.isWindows ? '.exe' : ''}";
 
