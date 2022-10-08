@@ -36,7 +36,7 @@ jobs:
         run: dart pub get
 
       - name: Update constants
-        run: dart script/patch_version.dart
+        run: dart script/update_constants.dart
 
       - name: Tests
         run: dart test --platform vm --timeout=60s
@@ -44,23 +44,36 @@ jobs:
           # we use gh, so we need the token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+#      - name: Get target executable name
+#        run: |
+#          echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
+#          #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
+#        id: version
+
       - name: Build executable
         run: |
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
-      - name: Get target executable name
+      - name: Create ZIP with the executable
         run: |
-          echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
+          dart script/archive.dart
+          #echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
           #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
-        id: version
+        #id: version
+
+#      - name: Get target executable name
+#        run: |
+#          echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
+#          #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
+#        id: version
 
 
-      - name: Archive executables
+      - name: Store ZIP as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.version.outputs.ARTIFACT_NAME }}
-          path: build/*
+          name: binary_from_${{ matrix.os }} #${{ steps.version.outputs.ARTIFACT_NAME }}
+          path: build/*.zip
           retention-days: 5
 
 
