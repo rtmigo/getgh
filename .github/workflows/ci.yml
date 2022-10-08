@@ -51,7 +51,7 @@ jobs:
 
       - name: Get target executable name
         run: |
-          echo "::set-output name=TAG_NAME::$(build/ghcp.exe --whatareyou)"
+          echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
           #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
         id: version
 
@@ -59,7 +59,7 @@ jobs:
       - name: Archive executables
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.version.outputs.TAG_NAME }}
+          name: ${{ steps.version.outputs.ARTIFACT_NAME }}
           path: build/ghcp.exe
           retention-days: 5
 
@@ -75,3 +75,47 @@ jobs:
           type: now
           target_branch: staging
           github_token: ${{ github.token }}
+
+  publish-flag:
+    if: github.event.head_commit.message=='publish'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+  to-master:
+    needs: [ to-staging,
+             publish-flag ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge to master branch
+        uses: devmasx/merge-branch@v1.3.1
+        with:
+          type: now
+          target_branch: master
+          github_token: ${{ github.token }}
+
+  to-github-release:
+    needs: [ to-master ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get the project version
+        run: |
+          echo "::set-output name=VER::$(dart script/version.dart)"
+        id: version
+
+      - name: Get previously built artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: downloaded_artifacts
+
+      - name: Publish GitHub release
+        id: publish_github_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.VER }}
+          files: downloaded_artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
