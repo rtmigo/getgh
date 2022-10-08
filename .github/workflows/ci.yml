@@ -1,14 +1,10 @@
+# ! THIS JOB EXPOSES GITHUB TOKENS TO THE TEST
+# ! IT SHOULD NOT BE RUN ON PULL REQUESTS
+
 name: unittest
 
 on:
   push:
-    branches: [dev]
-    paths-ignore:
-      - 'example/*'
-      - '**.md'
-      - '**.txt'
-
-  pull_request:
     branches: [dev]
     paths-ignore:
       - 'example/*'
@@ -37,6 +33,9 @@ jobs:
 
       - name: Tests
         run: dart test --platform ${{ matrix.platform }} --timeout=60s
+        env:
+          # we use gh, so we need the token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   to-staging:
     needs: [test]
