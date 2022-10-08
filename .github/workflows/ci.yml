@@ -56,7 +56,7 @@ jobs:
       - name: Archive executables
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.PKGVER }}
+          name: ${{ env.EXENAME }}
           path: build/ghcp.exe
           retention-days: 5
 
