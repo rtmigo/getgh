@@ -1,4 +1,3 @@
-# ! THIS JOB EXPOSES GITHUB TOKENS TO THE TEST
 # ! IT SHOULD NOT BE RUN ON PULL REQUESTS
 
 name: unittest
@@ -11,9 +10,8 @@ on:
       - '**.md'
       - '**.txt'
 
-
-# This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
+  # subsequently queued workflow run will interrupt previous runs
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 
@@ -24,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest] # [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -38,43 +36,27 @@ jobs:
       - name: Update constants
         run: dart script/update_constants.dart
 
-      - name: Tests
+      - name: Test
         run: dart test --platform vm --timeout=60s
         env:
-          # we use gh, so we need the token
+          # we use gh, so we need the token even if we don't read private repos
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Get target executable name
-#        run: |
-#          echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
-#          #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
-#        id: version
-
-      - name: Build executable
+      - name: Build exe
         run: |
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
-      - name: Create ZIP with the executable
+      - name: Create ZIP with the exe
         run: |
           dart script/archive.dart
-          #echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
-          #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
-        #id: version
-
-#      - name: Get target executable name
-#        run: |
-#          echo "::set-output name=ARTIFACT_NAME::$(build/ghcp.exe --whatareyou)"
-#          #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
-#        id: version
-
 
       - name: Store ZIP as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: binary_from_${{ matrix.os }} #${{ steps.version.outputs.ARTIFACT_NAME }}
+          name: binary_from_${{ matrix.os }}
           path: build/*.zip
-          retention-days: 5
+          retention-days: 3
 
 
   to-staging:
