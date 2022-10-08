@@ -4,11 +4,16 @@ import 'dart:math';
 import 'package:ghcp/ghcp.dart';
 import 'package:test/test.dart';
 
+import '../bin/source/gh_api.dart';
 import '../bin/ghcp.dart';
+import '../bin/source/sha.dart';
 
 void main() {
   test('url to path', () {
     expect(urlToPath("https://github.com/rtmigo/cicd/blob/dev/stub.py"),
+        "/repos/rtmigo/cicd/contents/stub.py");
+
+    expect(urlToPath("/repos/rtmigo/cicd/contents/stub.py"),
         "/repos/rtmigo/cicd/contents/stub.py");
   });
 

@@ -1,23 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:args/args.dart';
-import 'package:args/command_runner.dart';
-import 'package:crypto/crypto.dart';
-import 'package:either_dart/either.dart';
-import 'package:ghcp/ghcp.dart' as ghcp_dart;
 
-import 'constants.g.dart';
-
-String urlToPath(String url) {
-  // IN: https://github.com/rtmigo/cicd/blob/dev/stub.py
-  // OUT: /repos/rtmigo/cicd/contents/stub.py
-  final parts = url.split("github.com/").last.split("/");
-  final newParts =
-      ["repos"] + parts.sublist(0, 2) + ["contents"] + parts.sublist(4);
-  return "/${newParts.join("/")}";
-}
+import 'source/constants.g.dart';
 
 void run(String url) {
   final r = Process.runSync("gh", ["--version"]);
@@ -38,7 +23,7 @@ void main(List<String> arguments) {
   }
 
   if (results["version"]) {
-    print("ghcp $buildVersion ($buildDate)");
+    print("ghcp $buildVersion ($buildOs, $buildDate)");
     print("(c) 2022 Artsiom iG");
     print("https://github.com/rtmigo/ghcp_dart#readme");
     exit(0);
