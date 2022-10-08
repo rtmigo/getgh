@@ -19,20 +19,18 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest] # [ubuntu-latest, macos-latest, windows-latest]
-        sdk: [2.18.0]
-        platform: [vm]
 
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: ${{ matrix.sdk }}
+          sdk: 2.18.0
 
       - name: Install dependencies
         run: dart pub get
 
       - name: Tests
-        run: dart test --platform ${{ matrix.platform }} --timeout=60s
+        run: dart test --platform vm --timeout=60s
         env:
           # we use gh, so we need the token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

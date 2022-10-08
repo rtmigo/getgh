@@ -24,6 +24,8 @@ void main() {
     }
   });
 
+  // TODO prepare specific files for testing
+
   test('download to file', () {
     final fn = path.join(td!.path, "file.ext");
     expect(File(fn).existsSync(), false);
