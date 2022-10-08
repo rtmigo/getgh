@@ -101,6 +101,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: dart-lang/setup-dart@v1.3
+        # needed for get version
+        with:
+          sdk: 2.18.0
+
       - name: Get the project version
         run: |
           echo "::set-output name=VER::$(dart script/version.dart)"
