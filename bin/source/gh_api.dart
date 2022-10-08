@@ -19,22 +19,59 @@ class GhApiResult {
   GhApiResult({required this.sha, required this.contentBase64});
 }
 
-String urlToPath(String url) {
+List<String> removeBlobAndBranch(List<String> pathSegments) {
+  // user/repo/blob/branch/dir/file -> user/repo/dir/file
+  if (pathSegments.length >= 4 && pathSegments[2] == "blob") {
+    return pathSegments.sublist(0, 2) + pathSegments.sublist(4);
+  } else {
+    return pathSegments;
+  }
+}
+
+String? branchName(List<String> pathSegments) {
+  if (pathSegments.length >= 4 && pathSegments[2] == "blob") {
+    return pathSegments[3];
+  } else {
+    return null;
+  }
+}
+
+class Endpoint {
+  final String string;
+
+  Endpoint(this.string);
+
+  String filename() => Uri.parse(this.string).pathSegments.last;
+}
+
+/// На входе у нас аргумент программы. Скорее всего, заданный как http-адрес
+/// файла. На выходе будет "endpoint", к которому умеет обращаться api.
+Endpoint argToEndpoint(String url) {
   // IN: https://github.com/rtmigo/cicd/blob/dev/stub.py
   // OUT: /repos/rtmigo/cicd/contents/stub.py
 
   if (url.startsWith("/repos/")) {
-    return url;
+    return Endpoint(url);
   }
 
-  final parts = url.split("github.com/").last.split("/");
-  final newParts =
-      ["repos"] + parts.sublist(0, 2) + ["contents"] + parts.sublist(4);
-  return "/${newParts.join("/")}";
+  final segments = Uri.parse(url).pathSegments;
+  final branch = branchName(segments);
+  final userRepoPath = removeBlobAndBranch(segments);
+  final parts = ["repos"] +
+      userRepoPath.sublist(0, 2) +
+      ["contents"] +
+      userRepoPath.sublist(2);
+  final allExceptBranch = "/${parts.join("/")}";
+
+  if (branch != null) {
+    return Endpoint("$allExceptBranch?ref=$branch");
+  } else {
+    return Endpoint(allExceptBranch);
+  }
 }
 
-Either<String, GhApiResult> ghApi(String url) {
-  final r = Process.runSync("gh", ["api", urlToPath(url)]);
+Either<String, GhApiResult> ghApi(Endpoint ep) {
+  final r = Process.runSync("gh", ["api", ep.string]);
   if (r.exitCode != 0) {
     return Left("GH returned error code.\n${r.stdout + r.stderr}");
   }
