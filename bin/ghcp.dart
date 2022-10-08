@@ -1,17 +1,16 @@
 // SPDX-FileCopyrightText: (c) 2022 Artsiom iG <github.com/rtmigo>
 // SPDX-License-Identifier: MIT
 
-
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:args/args.dart';
+import 'package:either_dart/either.dart';
 import 'package:path/path.dart' as path;
 
 import 'source/constants.g.dart';
 import 'source/gh_api.dart';
 import 'source/sha.dart';
-
 
 /// Программе на вход подали [pathArg], но мы не знаем, это каталог или имя
 /// целевого файла. Также мы знаем, что файл в репозитории называется
@@ -19,9 +18,11 @@ import 'source/sha.dart';
 ///
 /// Возвращаем целевое имя файла, куда и правда собираемся сохранить.
 File argToTargetFile(String pathArg, Endpoint ep) {
+
   bool endsWithSlash() => pathArg.endsWith('/') || pathArg.endsWith('\\');
   bool isExistingDir() =>
       File(pathArg).statSync().type == FileSystemEntityType.directory;
+
   if (endsWithSlash() || isExistingDir()) {
     return File(path.join(pathArg, ep.filename()));
   } else {
@@ -37,32 +38,32 @@ Uint8List? readIfExists(File file) {
   }
 }
 
-void downloadToFile(Endpoint ep, File target) {
-
+Either<String, Object> downloadToFile(Endpoint ep, File target) {
   print("Endpoint: ${ep.string}");
   print("Target: ${target.path}");
 
-  ghApi(ep).fold((left) {
-    print("ERROR: $left");
-    exit(1);
-  }, (right) {
-    if (target.existsSync() && fileToGhSha(target) == right.sha) {
+  return ghApi(ep).map((apiResult) {
+    if (target.existsSync() && fileToGhSha(target) == apiResult.sha) {
       print("The file is up to date (not modified)");
+      return Right(Object());
     } else {
-      target.writeAsBytesSync(right.content());
+      target.writeAsBytesSync(apiResult.content());
       print("File updated");
+      return Right(Object());
     }
   });
 }
 
 void download(String srcAddr, String targetFileOrDir) {
-  final ep = argToEndpoint(srcAddr);
-  downloadToFile(ep,
-      argToTargetFile(targetFileOrDir, ep));
+  argToEndpoint(srcAddr)
+      .then((ep) => downloadToFile(ep, argToTargetFile(targetFileOrDir, ep)))
+      .either((left) {
+    print("ERROR: $left");
+    exit(1);
+  }, (right) => null);
 }
 
 void main(List<String> arguments) {
-
   final parser = ArgParser();
   parser.addFlag("version",
       abbr: "v", negatable: false, help: "Print version and exit");

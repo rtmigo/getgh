@@ -50,15 +50,18 @@ class Endpoint {
 
 /// На входе у нас аргумент программы. Скорее всего, заданный как http-адрес
 /// файла. На выходе будет "endpoint", к которому умеет обращаться api.
-Endpoint argToEndpoint(String url) {
+Either<String, Endpoint> argToEndpoint(String url) {
   // IN: https://github.com/rtmigo/cicd/blob/dev/stub.py
   // OUT: /repos/rtmigo/cicd/contents/stub.py
 
   if (url.startsWith("/repos/")) {
-    return Endpoint(url);
+    return Right(Endpoint(url));
   }
 
   final segments = Uri.parse(url).pathSegments;
+  if (segments.length<=2) {
+    return Left('Illegal address value: "$url"');
+  }
   final branch = branchName(segments);
   final userRepoPath = removeBlobAndBranch(segments);
   final parts = ["repos"] +
@@ -68,9 +71,9 @@ Endpoint argToEndpoint(String url) {
   final allExceptBranch = "/${parts.join("/")}";
 
   if (branch != null) {
-    return Endpoint("$allExceptBranch?ref=$branch");
+    return Right(Endpoint("$allExceptBranch?ref=$branch"));
   } else {
-    return Endpoint(allExceptBranch);
+    return Right(Endpoint(allExceptBranch));
   }
 }
 
