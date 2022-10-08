@@ -8,27 +8,18 @@ import 'source/constants.g.dart';
 import 'source/gh_api.dart';
 import 'source/sha.dart';
 
-void run(String url) {
-  final r = Process.runSync("gh", ["--version"]);
-  print(r.stdout);
-}
-
-String urlToBasename(String url) {
-  // TODO адреса бывают разнообразнее
-  return url.split('/').last;
-}
 
 /// Программе на вход подали [pathArg], но мы не знаем, это каталог или имя
 /// целевого файла. Также мы знаем, что файл в репозитории называется
 /// [remoteBasename].
 ///
 /// Возвращаем целевое имя файла, куда и правда собираемся сохранить.
-File basenameToPath(String pathArg, String remoteBasename) {
+File argToTargetFile(String pathArg, Endpoint ep) {
   bool endsWithSlash() => pathArg.endsWith('/') || pathArg.endsWith('\\');
   bool isExistingDir() =>
       File(pathArg).statSync().type == FileSystemEntityType.directory;
   if (endsWithSlash() || isExistingDir()) {
-    return File(path.join(pathArg, remoteBasename));
+    return File(path.join(pathArg, ep.filename()));
   } else {
     return File(pathArg);
   }
@@ -42,26 +33,33 @@ Uint8List? readIfExists(File file) {
   }
 }
 
-void downloadToFile(String url, File target) {
-  ghApi(url).fold((left) {
+void downloadToFile(Endpoint ep, File target) {
+
+  print("Endpoint: ${ep.string}");
+  print("Target: ${target.path}");
+
+  ghApi(ep).fold((left) {
     print("ERROR: $left");
     exit(1);
   }, (right) {
     if (target.existsSync() && fileToGhSha(target) == right.sha) {
-      print("${path.basename(target.path)} not changed");
+      print("The file is still up to date");
     } else {
       target.writeAsBytesSync(right.content());
-      print("${path.basename(target.path)} updated");
+      print("File updated");
     }
   });
 }
 
-void download(String url, String target) {
-  downloadToFile(url, basenameToPath(target, urlToBasename(url)));
+void download(String srcAddr, String targetFileOrDir) {
+  final ep = argToEndpoint(srcAddr);
+  downloadToFile(ep,
+      argToTargetFile(targetFileOrDir, ep));
 }
 
 void main(List<String> arguments) {
-  var parser = ArgParser();
+
+  final parser = ArgParser();
   parser.addFlag("version",
       abbr: "v", negatable: false, help: "Print version and exit");
   parser.addFlag("whatareyou", negatable: false, hide: true);
@@ -101,6 +99,5 @@ void main(List<String> arguments) {
     exit(64);
   }
 
-  final url = results.rest[0];
-  run(url);
+  download(results.rest[0], results.rest[1]);
 }

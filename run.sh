@@ -1,0 +1,1 @@
+dart run bin/ghcp.dart "$@"
