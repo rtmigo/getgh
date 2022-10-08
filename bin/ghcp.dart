@@ -47,7 +47,7 @@ void downloadToFile(Endpoint ep, File target) {
     exit(1);
   }, (right) {
     if (target.existsSync() && fileToGhSha(target) == right.sha) {
-      print("The file is still up to date");
+      print("The file is up to date (not modified)");
     } else {
       target.writeAsBytesSync(right.content());
       print("File updated");

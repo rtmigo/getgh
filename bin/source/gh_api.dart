@@ -77,8 +77,14 @@ Endpoint argToEndpoint(String url) {
 Either<String, GhApiResult> ghApi(Endpoint ep) {
   final r = Process.runSync("gh", ["api", ep.string]);
   if (r.exitCode != 0) {
-    return Left("GH returned error code.\n${r.stdout + r.stderr}");
+    return Left("GH exited with an error and the message "
+        "'${r.stderr.toString().trim()}'");
   }
+  final unsupported = "The address points to an unsupported content type";
   final d = json.decode(r.stdout);
+  if (d is List || d["type"]!="file") {
+    return Left(unsupported);
+  }
+
   return Right(GhApiResult(sha: d["sha"], contentBase64: d["content"]));
 }
