@@ -1,24 +1,25 @@
-# [ghcp](https://github.com/rtmigo/ghcp_dart) #experimental 
+![Generic badge](https://img.shields.io/badge/os-MacOS_|_Linux_|_Windows-blue.svg)
 
-
+# [ghcp](https://github.com/rtmigo/ghcp_dart) #experimental
 
 CLI utility for downloading individual files from GitHub
 repositories.
 
 ## Install
 
-To get started, you will need a working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
+To get started, you will need a
+working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
-Then just download the latest `ghcp` binary from [releases](https://github.com/rtmigo/ghcp_dart/releases).
+Then get the latest `ghcp` binary from
+the [Releases](https://github.com/rtmigo/ghcp_dart/releases) page.
 
 ## Use
 
-Download `file.java` to current working directory:
+Download `file.java` to current working directory (note the dot):
 
 ```bash
 ghcp https://github.com/user/repo/dir/file.java .
 ```
-
 
 Download `file.java` to `target/path/file.java`:
 

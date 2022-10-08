@@ -10,14 +10,14 @@ void main() {
   });
 
   test('argToEndpoint', () {
-    expect(argToEndpoint("https://github.com/rtmigo/cicd/blob/dev/stub.py").string,
+    expect(argToEndpoint("https://github.com/rtmigo/cicd/blob/dev/stub.py").right.string,
         "/repos/rtmigo/cicd/contents/stub.py?ref=dev");
 
 
-    expect(argToEndpoint("https://github.com/rtmigo/cicd/stub.py").string,
+    expect(argToEndpoint("https://github.com/rtmigo/cicd/stub.py").right.string,
         "/repos/rtmigo/cicd/contents/stub.py");
 
-    expect(argToEndpoint("/repos/rtmigo/cicd/contents/stub.py").string,
+    expect(argToEndpoint("/repos/rtmigo/cicd/contents/stub.py").right.string,
         "/repos/rtmigo/cicd/contents/stub.py");
   });
 }
