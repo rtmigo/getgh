@@ -28,16 +28,16 @@ void main() {
     final fn = path.join(td!.path, "file.ext");
     expect(File(fn).existsSync(), false);
     download(
-      "https://github.com/rtmigo/cicd/blob/dev/stub.py",
+      "https://github.com/rtmigo/jsontree_dart/blob/staging/README.md",
       fn);
     expect(File(fn).existsSync(), true);
   });
 
   test('download to dir', () {
-    final fn = path.join(td!.path, "stub.py");
+    final fn = path.join(td!.path, "README.md");
     expect(File(fn).existsSync(), false);
     download(
-        "https://github.com/rtmigo/cicd/blob/dev/stub.py",
+        "https://github.com/rtmigo/jsontree_dart/blob/staging/README.md",
         td!.path);
     expect(File(fn).existsSync(), true);
   });

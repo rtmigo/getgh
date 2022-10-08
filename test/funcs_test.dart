@@ -27,13 +27,13 @@ void main() {
   });
 
   test('gh api either left', () {
-    final r = ghApi("https://github.com/rtmigo/labuda/blob/dev/stub.py");
+    final r = ghApi("https://github.com/rtmigo/hflakdhf/blob/91273/README.md");
     expect(r.isLeft, true);
     expect(()=>r.right, throwsException);
   });
 
   test('gh api success', () {
-    final e = ghApi("https://github.com/rtmigo/cicd/blob/dev/stub.py");
+    final e = ghApi("https://github.com/rtmigo/jsontree_dart/blob/staging/README.md");
     expect(e.isRight, true);
     expect(bytesToGhSha(e.right.content()), e.right.sha);
   });
