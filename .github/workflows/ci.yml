@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: 2.18.0
 
@@ -49,10 +49,17 @@ jobs:
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
+      - name: Get target executable name
+        run: |
+          echo "::set-output name=TAG_NAME::$(build/ghcp.exe --whatareyou)"
+          #echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
+        id: version
+
+
       - name: Archive executables
         uses: actions/upload-artifact@v3
         with:
-          name: ghcp_${{ matrix.os }}.exe
+          name: ${{ steps.version.outputs.TAG_NAME }}
           path: build/ghcp.exe
           retention-days: 5
 

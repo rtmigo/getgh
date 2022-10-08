@@ -64,6 +64,7 @@ void main(List<String> arguments) {
   var parser = ArgParser();
   parser.addFlag("version",
       abbr: "v", negatable: false, help: "Print version and exit");
+  parser.addFlag("whatareyou", negatable: false, hide: true);
 
   late final ArgResults results;
   try {
@@ -71,6 +72,11 @@ void main(List<String> arguments) {
   } on FormatException catch (e) {
     print(e.message);
     exit(64);
+  }
+
+  if (results["whatareyou"]) {
+    print("ghcp-$buildVersion-$buildShortHead-$buildOs.exe");
+    exit(0);
   }
 
   if (results["version"]) {
