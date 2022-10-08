@@ -1,12 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:ghcp/ghcp.dart';
 import 'package:test/test.dart';
+import 'package:uuid/uuid.dart';
 
 import '../bin/source/gh_api.dart';
 import '../bin/ghcp.dart';
 import '../bin/source/sha.dart';
+
+import 'package:path/path.dart' as path;
 
 void main() {
   test('url to path', () {
@@ -33,6 +37,7 @@ void main() {
     expect(e.isRight, true);
     expect(bytesToGhSha(e.right.content()), e.right.sha);
   });
+
 }
 
 //
