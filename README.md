@@ -1,3 +1,6 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
-# ghcp_dart
+# [ghcp](https://github.com/rtmigo/ghcp_dart) 
+
+**WIP**
+
+CLI utility for downloading individual files from GitHub
+repositories.

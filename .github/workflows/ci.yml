@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: executable
-          path: output/ghcp.exe
+          path: build/ghcp.exe
 
 
   to-staging:
