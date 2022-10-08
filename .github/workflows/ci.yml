@@ -12,7 +12,7 @@ on:
       - '**.txt'
 
 jobs:
-  test:
+  build:
 
     timeout-minutes: 9
     runs-on: ${{ matrix.os }}
@@ -29,14 +29,29 @@ jobs:
       - name: Install dependencies
         run: dart pub get
 
+      - name: Update constants
+        run: dart script/patch_version.dart
+
       - name: Tests
         run: dart test --platform vm --timeout=60s
         env:
           # we use gh, so we need the token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build executable
+        run: |
+          mkdir build
+          dart compile exe bin/ghcp.dart -o build/ghcp.exe
+
+      - name: Archive executables
+        uses: actions/upload-artifact@v3
+        with:
+          name: executable
+          path: build/ghcp.exe
+
+
   to-staging:
-    needs: [test]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
