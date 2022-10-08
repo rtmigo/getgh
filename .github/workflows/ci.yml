@@ -49,10 +49,13 @@ jobs:
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
+      - name: Get target executable name    
+          echo "EXENAME=$(build/ghcp.exe --whatareyou)" >> $GITHUB_ENV
+
       - name: Archive executables
         uses: actions/upload-artifact@v3
         with:
-          name: ghcp_${{ matrix.os }}.exe
+          name: ${{ env.PKGVER }}
           path: build/ghcp.exe
           retention-days: 5
 
