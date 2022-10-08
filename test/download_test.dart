@@ -9,10 +9,8 @@ import '../bin/ghcp.dart';
 void main() {
   Directory? td = null;
   setUp(() {
-    //print("Creating!");
     assert(td==null);
-    td = Directory.systemTemp.createTempSync(); // Directory(path.join(Directory.systemTemp.path, Uuid().v4()));
-
+    td = Directory.systemTemp.createTempSync();
   });
 
   tearDown(() {
@@ -24,7 +22,7 @@ void main() {
     }
   });
 
-  // TODO prepare specific files for testing
+  // TODO prepare specific files in repos for testing
 
   test('download to file', () {
     final fn = path.join(td!.path, "file.ext");

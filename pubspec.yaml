@@ -1,7 +1,6 @@
 name: ghcp
 description: GitHub file downloader tool.
-version: 0.0.4
-# homepage: https://www.example.com
+version: 0.1.0
 
 environment:
   sdk: '>=2.18.0 <3.0.0'
@@ -14,7 +13,6 @@ dev_dependencies:
   archive: ^3.3.1
 
 dependencies:
-
   args: ^2.3.1
   crypto: ^3.0.2
   either_dart: ^0.2.0
