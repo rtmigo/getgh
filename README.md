@@ -37,7 +37,7 @@ Download `file.java` to `target/path/renamed.java`:
 ghfd https://github.com/user/repo/dir/file.java target/path/renamed.java
 ```
 
-## Disclaimer[^1]
+## Disclaimer[^1]:
 
 This project not endorsed or associated with GitHub.
 
