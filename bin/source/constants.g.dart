@@ -2,4 +2,4 @@
 const buildVersion='0.2.1';
 const buildDate='2022-10-09';
 const buildOs='linux';
-const buildShortHead='b8a83c5';
+const buildShortHead='f315539';
