@@ -3,7 +3,7 @@
 GH File Downloader
 
 * CLI utility for Linux, MacOS, Windows
-* Downloads individual files from GitHub repos
+* **Downloads individual files from GitHub repos**
 * Files may be public or private
 * Uses `gh` API internally
 * Does not create/modify local Git repos
