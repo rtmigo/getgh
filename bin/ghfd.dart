@@ -76,7 +76,7 @@ void main(List<String> arguments) {
   }
 
   if (parsedArgs["version"]) {
-    print(buildVersion);
+    print("ghfd $buildVersion ($buildDate)");
     exit(0);
   }
 
