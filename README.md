@@ -1,40 +1,40 @@
-![Generic badge](https://img.shields.io/badge/os-MacOS_|_Linux_|_Windows-blue.svg)
+# [ghfd](https://github.com/rtmigo/ghfd) #experimental  
 
-# [ghcp](https://github.com/rtmigo/ghcp_dart) #experimental
+GitHub File Downloader
 
-* CLI utility
-* Downloads files from GitHub repos
-* Does not create/modify local Git repos
+* CLI utility for Linux, MacOS, Windows
+* Downloads individual files from GitHub repos
 * Files may be public or private
-
+* Uses `gh` API internally
+* Does not create/modify local Git repos
 
 ## Install
 
 To get started, you will need a
 working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
-Then get the latest `ghcp` binary from
-the [Releases](https://github.com/rtmigo/ghcp_dart/releases) page.
+Then get the latest `ghfd` binary from
+the [Releases](https://github.com/rtmigo/ghfd/releases) page.
 
 ## Use
 
 Download `file.java` to current working directory:
 
 ```bash
-ghcp https://github.com/user/repo/dir/file.java .
+ghfd https://github.com/user/repo/dir/file.java .
 ```
 
 
 Download `file.java` to `target/path/file.java`:
 
 ```bash
-ghcp https://github.com/user/repo/dir/file.java target/path/
+ghfd https://github.com/user/repo/dir/file.java target/path/
 ```
 
 Download `file.java` to `target/path/renamed.java`:
 
 ```bash
-ghcp https://github.com/user/repo/dir/file.java target/path/renamed.java
+ghfd https://github.com/user/repo/dir/file.java target/path/renamed.java
 ```
 
 ## License
