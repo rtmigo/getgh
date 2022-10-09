@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
-import '../bin/ghcp.dart';
+import '../bin/ghfd.dart';
 
 void main() {
   Directory? td = null;

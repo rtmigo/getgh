@@ -78,7 +78,7 @@ void main(List<String> arguments) {
   }
 
   if (results["whatareyou"]) {
-    print("ghcp-$buildVersion-$buildShortHead-$buildOs.exe");
+    print("ghfd-$buildVersion-$buildShortHead-$buildOs.exe");
     exit(0);
   }
 
@@ -88,21 +88,25 @@ void main(List<String> arguments) {
   }
 
   if (results.rest.length != 2) {
-    print("ghcp (c) Artsiom iG");
+    print("GHFD (c) Artsiom iG");
     print("version $buildVersion ($buildDate)");
-    print("https://github.com/rtmigo/ghcp#readme");
+    print("https://github.com/rtmigo/ghfd#readme");
+    print("");
+    print("Downloads files from GitHub repos.\n"
+        "Does not create/modify local Git repos.\n"
+        "Files may be public or private.");
     print("");
 
     print("Usage:");
-    print('  ghcp <github-file-url> <target-path>');
+    print('  ghfd <github-file-url> <target-path>');
     print('');
     print("Options:");
     print("  ${parser.usage}");
     print('');
     print("Examples:");
     print(
-        '  ghcp https://github.com/rtmigo/ghcp_dart/README.md ghcp_readme.md');
-    print('  ghcp https://github.com/rtmigo/ghcp_dart/README.md parent/dir/');
+        '  ghfd https://github.com/rtmigo/ghfd/README.md saved.md');
+    print('  ghfd https://github.com/rtmigo/ghfd/README.md target/dir/');
 
     exit(64);
   }

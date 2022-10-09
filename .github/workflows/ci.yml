@@ -59,13 +59,13 @@ jobs:
       - name: Build Exe
         run: |
           mkdir build
-          dart compile exe bin/ghcp.dart -o build/ghcp.exe
+          dart compile exe bin/ghfd.dart -o build/ghfd.exe
 
       - name: Store Exe as artifact
         uses: actions/upload-artifact@v3
         with:
           name: binary_from_${{ matrix.os }}
-          path: build/ghcp.exe
+          path: build/ghfd.exe
           retention-days: 3
 
 
@@ -109,7 +109,7 @@ jobs:
       - name: Create distributable archives
         run: |
           wget -c https://github.com/rtmigo/exe2dist/releases/latest/download/exe2dist_linux_amd64.tgz -O - | tar -xz
-          ./exe2dist ghcp 'downloaded_artifacts/*/*' dist
+          ./exe2dist ghfd 'downloaded_artifacts/*/*' dist
           #dart script/archive.dart        
 
       - uses: dart-lang/setup-dart@v1.3
