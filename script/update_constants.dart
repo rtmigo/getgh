@@ -19,5 +19,6 @@ void main() {
           "const buildVersion='${doc["version"]}';\n"
           "const buildDate='${nowDate()}';\n"
           "const buildOs='${Platform.operatingSystem}';\n"
+          "const buildOsLong='${Platform.operatingSystemVersion}';\n"
           "const buildShortHead='${gitShortHead()}';\n");
 }

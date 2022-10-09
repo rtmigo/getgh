@@ -106,6 +106,7 @@ void main(List<String> arguments) {
     if (parsedArgs["version"]) {
       print("ghfd $buildVersion | $buildDate | $buildShortHead");
       print("(c) Artsiom iG (rtmigo.github.io)");
+      //print("built on ($buildOsLong)");
       exit(0);
     } else {
       download(parsedArgs.rest[0], parsedArgs.rest[1]);
