@@ -1,5 +1,7 @@
 # [ghcp](https://github.com/rtmigo/ghcp) #experimental
 
+GitHub file downloader
+
 * CLI utility for Linux, MacOS, Windows
 * Downloads individual files from GitHub repos
 * Files may be public or private
