@@ -18,7 +18,6 @@ import 'source/sha.dart';
 ///
 /// Возвращаем целевое имя файла, куда и правда собираемся сохранить.
 File argToTargetFile(String pathArg, Endpoint ep) {
-
   bool endsWithSlash() => pathArg.endsWith('/') || pathArg.endsWith('\\');
   bool isExistingDir() =>
       File(pathArg).statSync().type == FileSystemEntityType.directory;
@@ -67,27 +66,21 @@ void main(List<String> arguments) {
   final parser = ArgParser();
   parser.addFlag("version",
       abbr: "v", negatable: false, help: "Print version and exit");
-  parser.addFlag("whatareyou", negatable: false, hide: true);
 
-  late final ArgResults results;
+  final ArgResults parsedArgs;
   try {
-    results = parser.parse(arguments);
+    parsedArgs = parser.parse(arguments);
   } on FormatException catch (e) {
     print(e.message);
     exit(64);
   }
 
-  if (results["whatareyou"]) {
-    print("ghfd-$buildVersion-$buildShortHead-$buildOs.exe");
-    exit(0);
-  }
-
-  if (results["version"]) {
+  if (parsedArgs["version"]) {
     print(buildVersion);
     exit(0);
   }
 
-  if (results.rest.length != 2) {
+  if (parsedArgs.rest.length != 2) {
     print("GHFD (c) Artsiom iG");
     print("version $buildVersion ($buildDate)");
     print("https://github.com/rtmigo/ghfd#readme");
@@ -101,12 +94,11 @@ void main(List<String> arguments) {
     print("  ${parser.usage}");
     print('');
     print("Examples:");
-    print(
-        '  ghfd https://github.com/rtmigo/ghfd/README.md saved.md');
-    print('  ghfd https://github.com/rtmigo/ghfd/README.md target/dir/');
+    print('  ghfd https://github.com/user/repo/file.ext saved.ext');
+    print('  ghfd https://github.com/user/repo/file.ext target/dir/');
 
     exit(64);
   }
 
-  download(results.rest[0], results.rest[1]);
+  download(parsedArgs.rest[0], parsedArgs.rest[1]);
 }
