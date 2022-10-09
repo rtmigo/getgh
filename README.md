@@ -1,10 +1,10 @@
 # [ghfd](https://github.com/rtmigo/ghfd) #experimental  
 
-File Downloader
+GH File Downloader
 
 * CLI utility for Linux, MacOS, Windows
-* Downloads individual files from GitHub repos
-* Files may be public or private
+* **Downloads individual files from GitHub repos**
+* Files may be public or private (to which you have access)
 * Uses `gh` API internally
 * Does not create/modify local Git repos
 
