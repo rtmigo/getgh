@@ -16,10 +16,9 @@ working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
 Then get the latest `ghfd` binary from
 the [Releases](https://github.com/rtmigo/ghfd/releases) page.
 
-<details>
-    <summary>Or get the latest release from command-line</summary>
+<details><summary>Or get the latest release from command-line</summary>
 
-Linux:
+### Linux:
 
 ```bash
 # download and extract to current working directory
