@@ -2,8 +2,11 @@
 
 # [ghcp](https://github.com/rtmigo/ghcp_dart) #experimental
 
-CLI utility for downloading individual files from GitHub
-repositories.
+* CLI utility
+* Downloads files from GitHub repos
+* Does not create/modify local Git repos
+* Files may be public or private
+
 
 ## Install
 
@@ -15,11 +18,12 @@ the [Releases](https://github.com/rtmigo/ghcp_dart/releases) page.
 
 ## Use
 
-Download `file.java` to current working directory (note the dot):
+Download `file.java` to current working directory:
 
 ```bash
 ghcp https://github.com/user/repo/dir/file.java .
 ```
+
 
 Download `file.java` to `target/path/file.java`:
 
