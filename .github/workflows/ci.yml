@@ -16,6 +16,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
+  release-flag:
+    if: contains(github.event.head_commit.message, '!!release')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+  master-flag:
+    if: contains(github.event.head_commit.message, '!!master')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+
   build:
 
     timeout-minutes: 9
@@ -47,15 +61,11 @@ jobs:
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
-      - name: Create ZIP with the exe
-        run: |
-          dart script/archive.dart
-
       - name: Store ZIP as artifact
         uses: actions/upload-artifact@v3
         with:
           name: binary_from_${{ matrix.os }}
-          path: build/*.zip
+          path: build/ghcp.exe
           retention-days: 3
 
 
@@ -71,15 +81,9 @@ jobs:
           target_branch: staging
           github_token: ${{ github.token }}
 
-  publish-flag:
-    if: github.event.head_commit.message=='publish'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-
   to-master:
     needs: [ to-staging,
-             publish-flag ]
+             master-flag ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -92,10 +96,21 @@ jobs:
 
   to-github-release:
     needs: [ to-staging,
-             publish-flag ]
+             release-flag ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Get previously built artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: downloaded_artifacts
+
+      - name: Create distributable archives
+        run: |
+          wget -c https://github.com/rtmigo/exe2dist/releases/latest/download/exe2dist_linux_amd64.tgz -O - | tar -xz
+          ./exe2dist ghcp downloaded_artifacts/*/* dist
+          #dart script/archive.dart        
 
       - uses: dart-lang/setup-dart@v1.3
         # needed for get version
@@ -110,16 +125,11 @@ jobs:
           echo "::set-output name=VER::$(dart script/version.dart)"
         id: version
 
-      - name: Get previously built artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: downloaded_artifacts
-
       - name: Publish GitHub release
         id: publish_github_release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.VER }}
-          files: ./downloaded_artifacts/*/*
+          files: ./dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
