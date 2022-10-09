@@ -111,37 +111,4 @@ void main(List<String> arguments) {
       download(parsedArgs.rest[0], parsedArgs.rest[1]);
     }
   });
-
-  // final ArgResults parsedArgs;
-  // try {
-  //   parsedArgs = parser.parse(arguments);
-  // } on FormatException catch (e) {
-  //   print(e.message);
-  //   exit(64);
-  // }
-  //
-  // if (parsedArgs["version"]) {
-  //   print("ghfd $buildVersion ($buildDate)");
-  //   exit(0);
-  // }
-  //
-  // if (parsedArgs.rest.length != 2) {
-  //   print("GHFD (c) Artsiom iG");
-  //   print("version $buildVersion ($buildDate)");
-  //   print("https://github.com/rtmigo/ghfd#readme");
-  //
-  //   print("");
-  //
-  //   print("Usage:");
-  //   print('  ghfd <github-file-url> <target-path>');
-  //   print('');
-  //   print("Options:");
-  //   print("  ${parser.usage}");
-  //   print('');
-  //   print("Examples:");
-  //   print('  ghfd https://github.com/user/repo/file.ext saved.ext');
-  //   print('  ghfd https://github.com/user/repo/file.ext target/dir/');
-  //
-  //   exit(64);
-  // }
 }
