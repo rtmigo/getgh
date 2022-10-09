@@ -1,6 +1,6 @@
 # [ghfd](https://github.com/rtmigo/ghfd) #experimental  
 
-GitHub File Downloader
+GitHub File Downloader[^1]
 
 * CLI utility for Linux, MacOS, Windows
 * Downloads individual files from GitHub repos
@@ -36,6 +36,10 @@ Download `file.java` to `target/path/renamed.java`:
 ```bash
 ghfd https://github.com/user/repo/dir/file.java target/path/renamed.java
 ```
+
+## Disclaimer
+
+[^1]: Not endorsed or associated with GitHub
 
 ## License
 
