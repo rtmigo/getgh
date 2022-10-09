@@ -83,13 +83,16 @@ void main(List<String> arguments) {
   }
 
   if (results["version"]) {
-    print("ghcp $buildVersion ($buildOs, $buildDate)");
-    print("(c) 2022 Artsiom iG");
-    print("https://github.com/rtmigo/ghcp_dart#readme");
+    print(buildVersion);
     exit(0);
   }
 
   if (results.rest.length != 2) {
+    print("ghcp (c) Artsiom iG");
+    print("version $buildVersion ($buildDate)");
+    print("https://github.com/rtmigo/ghcp#readme");
+    print("");
+
     print("Usage:");
     print('  ghcp <github-file-url> <target-path>');
     print('');

@@ -16,6 +16,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
+  release-flag:
+    if: contains(github.event.head_commit.message, '!!release')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+  master-flag:
+    if: contains(github.event.head_commit.message, '!!master')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+
   build:
 
     timeout-minutes: 9
@@ -47,15 +61,17 @@ jobs:
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
-      - name: Create ZIP with the exe
+      - name: Create distributable archive
         run: |
-          dart script/archive.dart
+          wget -c https://github.com/rtmigo/exe2dist/releases/latest/download/exe2dist_linux_amd64.tgz -O - | tar -xz
+          ./exe2dist ghcp build/ghcp.exe build/dist
+          #dart script/archive.dart
 
       - name: Store ZIP as artifact
         uses: actions/upload-artifact@v3
         with:
           name: binary_from_${{ matrix.os }}
-          path: build/*.zip
+          path: build/dist/*.zip
           retention-days: 3
 
 
@@ -79,7 +95,7 @@ jobs:
 
   to-master:
     needs: [ to-staging,
-             publish-flag ]
+             master-flag ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -91,8 +107,8 @@ jobs:
           github_token: ${{ github.token }}
 
   to-github-release:
-    needs: [ to-staging,
-             publish-flag ]
+    needs: [ to-master,
+             release-flag ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
