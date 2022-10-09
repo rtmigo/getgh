@@ -56,12 +56,12 @@ jobs:
           # we use gh, so we need the token even if we don't read private repos
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build exe
+      - name: Build Exe
         run: |
           mkdir build
           dart compile exe bin/ghcp.dart -o build/ghcp.exe
 
-      - name: Store ZIP as artifact
+      - name: Store Exe as artifact
         uses: actions/upload-artifact@v3
         with:
           name: binary_from_${{ matrix.os }}
@@ -109,7 +109,7 @@ jobs:
       - name: Create distributable archives
         run: |
           wget -c https://github.com/rtmigo/exe2dist/releases/latest/download/exe2dist_linux_amd64.tgz -O - | tar -xz
-          ./exe2dist ghcp downloaded_artifacts/*/* dist
+          ./exe2dist ghcp 'downloaded_artifacts/*/*' dist
           #dart script/archive.dart        
 
       - uses: dart-lang/setup-dart@v1.3
