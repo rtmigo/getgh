@@ -78,7 +78,7 @@ Either<String, ArgResults> parseArgs(List<String> arguments) {
   }
 
   if (parsedArgs.rest.length != 2 && !parsedArgs["version"]) {
-    return Left("Incorrect number of arguments.");
+    return Left("Invalid number of arguments.");
   }
 
   return Right(parsedArgs);

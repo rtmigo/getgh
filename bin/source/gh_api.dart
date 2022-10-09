@@ -60,7 +60,7 @@ Either<String, Endpoint> argToEndpoint(String url) {
 
   final segments = Uri.parse(url).pathSegments;
   if (segments.length<=2) {
-    return Left('Illegal address value: "$url"');
+    return Left('Invalid address: "$url"');
   }
   final branch = branchName(segments);
   final userRepoPath = removeBlobAndBranch(segments);
@@ -83,7 +83,7 @@ Either<String, GhApiResult> ghApi(Endpoint ep) {
     return Left("GH exited with an error and the message "
         "'${r.stderr.toString().trim()}'");
   }
-  final unsupported = "The address points to an unsupported content type";
+  final unsupported = "The endpoint corresponds to an unsupported content type";
   final d = json.decode(r.stdout);
   if (d is List || d["type"]!="file") {
     return Left(unsupported);
