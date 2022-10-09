@@ -87,12 +87,6 @@ jobs:
           target_branch: staging
           github_token: ${{ github.token }}
 
-  publish-flag:
-    if: github.event.head_commit.message=='publish'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-
   to-master:
     needs: [ to-staging,
              master-flag ]
@@ -107,7 +101,7 @@ jobs:
           github_token: ${{ github.token }}
 
   to-github-release:
-    needs: [ to-master,
+    needs: [ to-staging,
              release-flag ]
     runs-on: ubuntu-latest
     steps:
