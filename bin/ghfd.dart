@@ -39,15 +39,15 @@ Uint8List? readIfExists(File file) {
 
 Either<String, Object> downloadToFile(Endpoint ep, File target) {
   print("Endpoint: ${ep.string}");
-  print("Target: ${target.path}");
+  print("  Target: ${target.path}");
 
   return ghApi(ep).map((apiResult) {
     if (target.existsSync() && fileToGhSha(target) == apiResult.sha) {
-      print("The file is up to date (not modified)");
+      print("  The file was up to date (not modified)");
       return Right(Object());
     } else {
       target.writeAsBytesSync(apiResult.content());
-      print("File updated");
+      print("  File updated");
       return Right(Object());
     }
   });
@@ -62,43 +62,86 @@ void download(String srcAddr, String targetFileOrDir) {
   }, (right) => null);
 }
 
-void main(List<String> arguments) {
+ArgParser theParser() {
   final parser = ArgParser();
   parser.addFlag("version",
       abbr: "v", negatable: false, help: "Print version and exit");
+  return parser;
+}
 
+Either<String, ArgResults> parseArgs(List<String> arguments) {
   final ArgResults parsedArgs;
   try {
-    parsedArgs = parser.parse(arguments);
+    parsedArgs = theParser().parse(arguments);
   } on FormatException catch (e) {
-    print(e.message);
-    exit(64);
+    return Left(e.message);
   }
 
-  if (parsedArgs["version"]) {
-    print("ghfd $buildVersion ($buildDate)");
-    exit(0);
+  if (parsedArgs.rest.length != 2 && !parsedArgs["version"]) {
+    return Left("Incorrect number of arguments.");
   }
 
-  if (parsedArgs.rest.length != 2) {
-    print("GHFD (c) Artsiom iG");
-    print("version $buildVersion ($buildDate)");
-    print("https://github.com/rtmigo/ghfd#readme");
+  return Right(parsedArgs);
+}
 
+void main(List<String> arguments) {
+  parseArgs(arguments).either((left) {
+    print("ERROR: $left");
     print("");
 
     print("Usage:");
     print('  ghfd <github-file-url> <target-path>');
     print('');
     print("Options:");
-    print("  ${parser.usage}");
+    print("  ${theParser().usage}");
     print('');
     print("Examples:");
     print('  ghfd https://github.com/user/repo/file.ext saved.ext');
     print('  ghfd https://github.com/user/repo/file.ext target/dir/');
+    print('');
+    print("See also: https://github.com/rtmigo/ghfd#readme");
 
     exit(64);
-  }
+  }, (parsedArgs) {
+    if (parsedArgs["version"]) {
+      print("ghfd $buildVersion | $buildDate | $buildShortHead");
+      print("(c) Artsiom iG (rtmigo.github.io)");
+      exit(0);
+    } else {
+      download(parsedArgs.rest[0], parsedArgs.rest[1]);
+    }
+  });
 
-  download(parsedArgs.rest[0], parsedArgs.rest[1]);
+  // final ArgResults parsedArgs;
+  // try {
+  //   parsedArgs = parser.parse(arguments);
+  // } on FormatException catch (e) {
+  //   print(e.message);
+  //   exit(64);
+  // }
+  //
+  // if (parsedArgs["version"]) {
+  //   print("ghfd $buildVersion ($buildDate)");
+  //   exit(0);
+  // }
+  //
+  // if (parsedArgs.rest.length != 2) {
+  //   print("GHFD (c) Artsiom iG");
+  //   print("version $buildVersion ($buildDate)");
+  //   print("https://github.com/rtmigo/ghfd#readme");
+  //
+  //   print("");
+  //
+  //   print("Usage:");
+  //   print('  ghfd <github-file-url> <target-path>');
+  //   print('');
+  //   print("Options:");
+  //   print("  ${parser.usage}");
+  //   print('');
+  //   print("Examples:");
+  //   print('  ghfd https://github.com/user/repo/file.ext saved.ext');
+  //   print('  ghfd https://github.com/user/repo/file.ext target/dir/');
+  //
+  //   exit(64);
+  // }
 }
