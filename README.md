@@ -1,6 +1,6 @@
 # [ghfd](https://github.com/rtmigo/ghfd) #experimental  
 
-File Downloader
+GH File Downloader
 
 * CLI utility for Linux, MacOS, Windows
 * Downloads individual files from GitHub repos
