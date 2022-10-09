@@ -1,6 +1,6 @@
 name: ghfd
-description: GitHub File Downloader
-version: 0.2.0
+description: GH file downloader. Downloads individual files from GitHub repos
+version: 0.2.1
 
 environment:
   sdk: '>=2.18.0 <3.0.0'

@@ -91,10 +91,7 @@ void main(List<String> arguments) {
     print("GHFD (c) Artsiom iG");
     print("version $buildVersion ($buildDate)");
     print("https://github.com/rtmigo/ghfd#readme");
-    print("");
-    print("Downloads files from GitHub repos.\n"
-        "Does not create/modify local Git repos.\n"
-        "Files may be public or private.");
+
     print("");
 
     print("Usage:");
