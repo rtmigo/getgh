@@ -16,6 +16,25 @@ working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
 Then get the latest `ghfd` binary from
 the [Releases](https://github.com/rtmigo/ghfd/releases) page.
 
+<details>
+    <summary>Or get the latest release from command-line</summary>
+
+Linux:
+
+```bash
+# download and extract to current working directory
+wget -c -O - \
+  https://github.com/rtmigo/ghfd/releases/latest/download/ghfd_linux_amd64.tgz \
+  | tar -xz
+
+# check it runs
+./ghfd --version
+
+# maybe move to some directory in your $PATH
+mv -v ./ghfd "$HOME/.local/bin/"
+```
+</details>
+
 ## Use
 
 Download `file.java` to current working directory:
