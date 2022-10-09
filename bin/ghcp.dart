@@ -88,9 +88,13 @@ void main(List<String> arguments) {
   }
 
   if (results.rest.length != 2) {
-    print("ghcp (c) Artsiom iG");
+    print("GHCP (c) Artsiom iG");
     print("version $buildVersion ($buildDate)");
     print("https://github.com/rtmigo/ghcp#readme");
+    print("");
+    print("Downloads files from GitHub repos.\n"
+        "Does not create/modify local Git repos.\n"
+        "Files may be public or private.");
     print("");
 
     print("Usage:");
@@ -101,8 +105,8 @@ void main(List<String> arguments) {
     print('');
     print("Examples:");
     print(
-        '  ghcp https://github.com/rtmigo/ghcp_dart/README.md ghcp_readme.md');
-    print('  ghcp https://github.com/rtmigo/ghcp_dart/README.md parent/dir/');
+        '  ghcp https://github.com/rtmigo/ghcp/README.md saved.md');
+    print('  ghcp https://github.com/rtmigo/ghcp/README.md target/dir/');
 
     exit(64);
   }
