@@ -1,12 +1,10 @@
-![Generic badge](https://img.shields.io/badge/os-MacOS_|_Linux_|_Windows-blue.svg)
+# [ghcp](https://github.com/rtmigo/ghcp) #experimental
 
-# [ghcp](https://github.com/rtmigo/ghcp_dart) #experimental
-
-* CLI utility
-* Downloads files from GitHub repos
-* Does not create/modify local Git repos
+* CLI utility for Linux, MacOS, Windows
+* Downloads individual files from GitHub repos
 * Files may be public or private
-
+* Uses `gh` API internally
+* Does not create/modify local Git repos
 
 ## Install
 
@@ -14,7 +12,7 @@ To get started, you will need a
 working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
 Then get the latest `ghcp` binary from
-the [Releases](https://github.com/rtmigo/ghcp_dart/releases) page.
+the [Releases](https://github.com/rtmigo/ghcp/releases) page.
 
 ## Use
 
