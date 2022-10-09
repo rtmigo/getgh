@@ -1,6 +1,6 @@
 name: ghfd
-description: GitHub file downloader tool
-version: 0.1.2
+description: GitHub File Downloader
+version: 0.2.0
 
 environment:
   sdk: '>=2.18.0 <3.0.0'
