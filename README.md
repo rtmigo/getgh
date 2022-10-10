@@ -51,7 +51,7 @@ getgh https://github.com/user/repo/file.sh
 ```
 
 Or pipe to other process. For example, extract the tar contents
-in the current working directory:
+to the current working directory:
 
 ```bash
 getgh https://github.com/user/repo/archive.tar.gz | tar -xz
