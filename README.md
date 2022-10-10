@@ -6,7 +6,7 @@
 * Uses `gh` API internally
 * Does not create/modify local Git repos
 
-## Install
+# Install
 
 To get started, you will need a
 working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
@@ -16,7 +16,7 @@ the [Releases](https://github.com/rtmigo/getgh/releases) page.
 
 <details><summary>Or get the latest release from command-line</summary>
 
-### Linux:
+## Linux:
 
 ```bash
 # download and extract to current working directory
@@ -32,9 +32,17 @@ mv -v ./getgh "$HOME/.local/bin/"
 ```
 </details>
 
-## Use
+# Use
 
-### File to directory
+## File to file
+
+Download remote `file.sh` to local `newname.sh`:
+
+```bash
+getgh https://github.com/user/repo/file.sh newname.sh
+```
+
+## File into directory
 
 Download remote `file.sh` to local `targetdir/file.sh`:
 
@@ -42,7 +50,7 @@ Download remote `file.sh` to local `targetdir/file.sh`:
 getgh https://github.com/user/repo/file.sh targetdir
 ```
 
-### Directory to directory
+## Directory to directory
 
 Download all files from remote `dir` storing them inside local `targetdir`:
 
@@ -50,7 +58,7 @@ Download all files from remote `dir` storing them inside local `targetdir`:
 getgh https://github.com/user/repo/dir/ targetdir
 ```
 
-## License
+# License
 
 Copyright © 2022 [Artsiom iG](https://github.com/rtmigo).
 Released under the [MIT License](LICENSE).

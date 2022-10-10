@@ -24,26 +24,41 @@ void main() {
 
   // TODO prepare specific files in repos for testing
 
+  test('download file to file', () {
+    final target = File(path.join(td!.path, "a.md"));
+
+    expect(td!.listSync().length, 0);
+    expect(target.existsSync(), false);
+
+    updateLocal(
+        argToEndpoint(
+            "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
+        target.path);
+
+    expect(td!.listSync().length, 1);
+    expect(target.existsSync(), true);
+  });
+
   test('download file to dir', () {
     final fn = path.join(td!.path, "a.md");
 
     expect(td!.listSync().length, 0);
     expect(File(fn).existsSync(), false);
 
-    updateDir(
+    updateLocal(
         argToEndpoint(
             "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
-        td!);
+        td!.path);
 
     expect(td!.listSync().length, 1);
     expect(File(fn).existsSync(), true);
   });
 
   test('download flat dir', () {
-    updateDir(
+    updateLocal(
         argToEndpoint(
             "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/"),
-        td!);
+        td!.path);
 
     expect(td!.listSync(recursive: true).length, 3);
     expect(File(path.join(td!.path, "a.md")).existsSync(), true);
@@ -52,10 +67,10 @@ void main() {
   });
 
   test('download subdirs dir', () {
-    updateDir(
+    updateLocal(
         argToEndpoint(
             "https://github.com/rtmigo/ghfile_test_data/blob/dev/"),
-        td!);
+        td!.path);
 
     expect(td!.listSync(recursive: true).length, greaterThan(5));
     expect(File(path.join(td!.path, "file_one.txt")).existsSync(), true);
