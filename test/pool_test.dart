@@ -10,7 +10,7 @@ class OmgError extends Error {}
 void main() {
   test("one", () async {
     final r = Random();
-    final pool = TaskPool<int>(concurrency: 4);
+    final pool = ConcurrentScheduler<int>(concurrency: 4);
     final futures = List<Future<int>>.empty(growable: true);
     int maxEver = 0;
     for (int i = 0; i < 100; ++i) {
@@ -44,5 +44,19 @@ void main() {
     expect(errors, 25);
     expect(success, 75);
     expect(pool.currentlyRunning, 0);
+  });
+
+  test("million tasks", () async {
+    // test whether too many tasks can lead to stack overflow
+    final pool = ConcurrentScheduler<int>(concurrency: 32);
+    final futures = List<Future<int>>.empty(growable: true);
+    for (int i = 0; i < 1000000; ++i) {
+      futures.add(pool.run(() async => i));
+    }
+    final results = await Future.wait(futures);
+    
+    expect(
+      results.fold(0, (final sum, final x) => sum+x),
+        499999500000);
   });
 }
