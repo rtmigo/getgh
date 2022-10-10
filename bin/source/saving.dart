@@ -69,6 +69,10 @@ Uint8List _getFileContent(GithubFsEntry entry) {
 Uint8List getFileContent(Endpoint ep) => _getFileContent(_getFileEntry(ep));
 
 void updateLocal(Endpoint ep, String targetPath) {
+  if (targetPath.endsWith(pathlib.separator)) {
+    Directory(targetPath).createSync(recursive: true);
+  }
+
   final targetDir = Directory(targetPath);
   if (targetDir.existsSync() &&
       targetDir.statSync().type == FileSystemEntityType.directory) {

@@ -82,13 +82,18 @@ void main(List<String> arguments) {
     print("");
 
     print("Usage:");
-    print('  getgh <github-file-url> <target-path>');
+    print('  getgh <github-url> <target-path>');
     print('');
     print("Options:");
     print("  ${theParser().usage}");
     print('');
-    print("Examples:");
+    print("# File to stdout:");
+    print('  getgh https://github.com/user/repo/file.ext');
+    print('');
+    print("# File into target dir:");
     print('  getgh https://github.com/user/repo/file.ext target/dir/');
+    print('');
+    print("# Dir to target dir:");
     print('  getgh https://github.com/user/repo/ target/dir/');
     print('');
     print("See also: https://github.com/rtmigo/getgh#readme");

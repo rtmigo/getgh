@@ -106,7 +106,7 @@ Endpoint argToEndpoint(String url) {
   }
 
   final segmentsList = Uri.parse(url).pathSegments;
-  if (segmentsList.length <= 2) {
+  if (segmentsList.length <= 1) {
     throw ExpectedException('Invalid address: "$url"');
   }
   final segments = GithubPathSegments(segmentsList.kt);
@@ -126,8 +126,24 @@ Endpoint argToEndpoint(String url) {
   }
 }
 
-Iterable<GithubFsEntry> getEntries(Endpoint ep) sync* {
-  final r = Process.runSync("gh", ["api", ep.string]);
+class GhNotInstalledException extends ExpectedException {
+  GhNotInstalledException()
+      : super("`gh` not installed. Get it at https://cli.github.com/");
+}
+
+Iterable<GithubFsEntry> getEntries(Endpoint ep,
+    {String executable = "gh"}) sync* {
+  final ProcessResult r;
+  try {
+    r = Process.runSync(executable, ["api", ep.string]);
+  } on ProcessException catch (e) {
+    if (e.message == "No such file or directory") {
+      throw GhNotInstalledException();
+    } else {
+      rethrow;
+    }
+  }
+
   if (r.exitCode != 0) {
     throw ExpectedException("GH exited with error message "
         '"${r.stderr.toString().trim()}"');
