@@ -33,3 +33,4 @@ linter:
     unnecessary_lambdas: true
     use_decorated_box: true
     use_colored_box: true
+

@@ -24,7 +24,7 @@ Get the latest `hubget` binary from the
 [Releases](https://github.com/rtmigo/hubget/releases) page
 
 
-<details><summary>Alternatively, get the release from the command line</summary>
+<details><summary>Alternatively, get the release via the command line</summary>
 
 ### Linux
 
