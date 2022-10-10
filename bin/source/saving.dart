@@ -1,7 +1,8 @@
+import 'dart:cli';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:http/http.dart' as http;
 import 'package:kt_dart/collection.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -70,27 +71,54 @@ String? _childName(Endpoint parent, Endpoint child) {
   return childSegments.last;
 }
 
-Uint8List _getFileContent(GithubFsEntry entry) {
+
+Future<Uint8List> _getFileContent(GithubFsEntry entry) async {
   // контент может быт уже внутри entry (в виде base64), а может и не быть.
+
+  print(entry.data);
+  //print(entry.downloadUrl);
+  //print(entry.contentBase64);
 
   if (entry.type != GithubFsEntryType.file) {
     throw ArgumentError(entry.type);
   }
-  final String theBase64;
-  if (entry.contentBase64 != null) {
-    theBase64 = entry.contentBase64!;
-  } else {
-    // TODO
-    // я не уверен насчёт больших файлов: возможно, там тоже не будет контента
-    theBase64 = iterRemoteEntries(entry.endpoint).toList().single.contentBase64!;
+
+  if (entry.contentBase64==null && entry.downloadUrl==null) {
+    // submodule возвращается с type="file", download_url=null
+    throw FileContentNotAvailableException(entry.endpoint);
   }
 
-  return base64.decode(theBase64.replaceAll('\n', ''));
+  final String? theBase64 = entry.contentBase64 ?? iterRemoteEntries(entry.endpoint).single.contentBase64;
+  if (theBase64!=null) {
+    return base64.decode(theBase64.replaceAll('\n', ''));
+  }
+
+  // в случае двоичных больших файлов контент никогда не возвращается
+  // как base64. Но может быть доступна прямая ссылка на скачивание.
+  // TODO использовать потоки, а не буферы
+  return _downloadHttp(entry.downloadUrl!);
 }
 
-Uint8List getFileContent(Endpoint ep) => _getFileContent(_getFileEntry(ep));
+Future<Uint8List> _downloadHttp(Uri uri) async {
+  try {
+    return (await http.get(uri)).bodyBytes;
+  } catch (e) {
+    throw HttpErrorException(e.runtimeType.toString());
+  }
+}
 
-void updateLocal(Endpoint ep, String targetPath) {
+class HttpErrorException extends ExpectedException {
+  HttpErrorException(String s): super(s);
+}
+
+
+class FileContentNotAvailableException extends ExpectedException {
+  FileContentNotAvailableException(Endpoint ep): super("File content not available");
+}
+
+Future<Uint8List> getFileContent(Endpoint ep) => _getFileContent(_getFileEntry(ep));
+
+Future<void> updateLocal(Endpoint ep, String targetPath)  async {
   if (targetPath.endsWith(pathlib.separator)) {
     Directory(targetPath).createSync(recursive: true);
   }
@@ -98,13 +126,13 @@ void updateLocal(Endpoint ep, String targetPath) {
   final targetDir = Directory(targetPath);
   if (targetDir.existsSync() &&
       targetDir.statSync().type == FileSystemEntityType.directory) {
-    _updateDir(ep, targetDir);
+    await _updateDir(ep, targetDir);
   } else {
     // TODO
     // У нас нет целевого пути, и не было слэша. Мы полагаем, что там имя
     // файла. Но если GitHub сообщит, что там каталог, мы могли бы изменить
     // мнение
-    _updateFile(ep, File(targetPath));
+    await _updateFile(ep, File(targetPath));
   }
 }
 
@@ -117,10 +145,10 @@ GithubFsEntry _getFileEntry(Endpoint ep) {
   return entries.single;
 }
 
-void _updateFile(Endpoint ep, File target) =>
+Future<void> _updateFile(Endpoint ep, File target) =>
     _updateFileByEntry(_getFileEntry(ep), target);
 
-void _updateFileByEntry(GithubFsEntry entry, File target) {
+Future<void> _updateFileByEntry(GithubFsEntry entry, File target) async {
   //print("Want save ${entry.endpoint.string} to $target");
   print("* Remote: ${entry.endpoint.string}");
   print("  Local: ${target.path}");
@@ -129,21 +157,25 @@ void _updateFileByEntry(GithubFsEntry entry, File target) {
       fileToGhSha(target) == entry.sha) {
     print("  The file is up to date (not modified)");
   } else {
-    final parentDir = Directory(pathlib.dirname(target.path));
-    parentDir.createSync(recursive: true);
-    target.writeAsBytesSync(_getFileContent(entry));
-    print("  File updated");
+    try {
+      final parentDir = Directory(pathlib.dirname(target.path));
+      parentDir.createSync(recursive: true);
+      target.writeAsBytesSync(await _getFileContent(entry));
+      print("  File updated");
+    } on FileContentNotAvailableException catch (_) {
+      print("  ERROR: no content");  // такое, например, в случае подмодулей
+    }
   }
 }
 
-void _updateDir(Endpoint ep, Directory target) {
-  _updateDirRecursive(ep, target, KtSet<String>.empty());
+Future<void> _updateDir(Endpoint ep, Directory target) async {
+  await _updateDirRecursive(ep, target, KtSet<String>.empty());
 }
 
 /// Аргумент [processed] нужен только для того, чтобы предотвратить
 /// бесконечную рекурсию по ошибке.
-void _updateDirRecursive(
-    Endpoint sourcePath, Directory target, KtSet<String> processed) {
+Future<void> _updateDirRecursive(
+    Endpoint sourcePath, Directory target, KtSet<String> processed) async {
   // TODO Проверять sha каталогов (не только файлов)
 
   if (processed.contains(sourcePath.string)) {
@@ -157,11 +189,11 @@ void _updateDirRecursive(
 
     switch (entry.type) {
       case GithubFsEntryType.dir:
-        _updateDirRecursive(entry.endpoint, Directory(targetPath),
+        await _updateDirRecursive(entry.endpoint, Directory(targetPath),
             processed.plusElement(sourcePath.string));
         break;
       case GithubFsEntryType.file:
-        _updateFileByEntry(entry, File(targetPath));
+        await _updateFileByEntry(entry, File(targetPath));
         break;
       default:
         throw ArgumentError.value(entry.type);

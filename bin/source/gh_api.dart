@@ -30,11 +30,11 @@ class GithubFsEntry {
   /// Определено только для файлов. И не всегда, а только когда их запрашивают
   /// по одному.
   String? get contentBase64 {
-    if (this.encoding == null) {
+    if (this.encoding == null || this.encoding=="none") {
       return null;
     }
     if (this.encoding != "base64") {
-      throw ArgumentError("Unexpected encoding: .");
+      throw ArgumentError("Unexpected encoding: $encoding.");
     }
     return this.data["content"] as String?;
   }
@@ -67,7 +67,7 @@ class GithubFsEntry {
   }
 
   /// Определено для файлов, но не каталогов.
-  Uri? get downloadUrl => (this.data["type"] as String?)?.let(Uri.parse);
+  Uri? get downloadUrl => (this.data["download_url"] as String?)?.let(Uri.parse);
 }
 
 class ApiResponse {}
