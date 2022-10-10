@@ -8,7 +8,7 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 
-/// Считает хэш так же, как это делает GH. Возвращает hexdigest.
+/// Считает хэш так же, как это делает GH. Возвращает hex digest.
 String bytesToGhSha(Uint8List bytes) =>
     sha1.convert(ascii.encode("blob ${bytes.length}\u0000") + bytes).toString();
 

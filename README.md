@@ -1,6 +1,4 @@
-# [ghfd](https://github.com/rtmigo/ghfd) #experimental  
-
-GH File Downloader
+# [getgh](https://github.com/rtmigo/getgh) #experimental  
 
 * CLI utility for Linux, MacOS, Windows
 * **Downloads individual files from GitHub repos**
@@ -8,40 +6,80 @@ GH File Downloader
 * Uses `gh` API internally
 * Does not create/modify local Git repos
 
-## Install
+# Install
 
-To get started, you will need a
-working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
+To get started, you will need a working [GitHub
+CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
-Then get the latest `ghfd` binary from
-the [Releases](https://github.com/rtmigo/ghfd/releases) page.
+Then get the latest `getgh` binary from
+the [Releases](https://github.com/rtmigo/getgh/releases) page.
 
-## Use
+<details><summary>Or get the latest release from command-line</summary>
 
-Download `file.java` to current working directory:
-
-```bash
-ghfd https://github.com/user/repo/dir/file.java .
-```
-
-
-Download `file.java` to `target/path/file.java`:
+## Linux:
 
 ```bash
-ghfd https://github.com/user/repo/dir/file.java target/path/
-```
+# download and extract to current working directory
+wget -c -O - \
+  https://github.com/rtmigo/getgh/releases/latest/download/getgh_linux_amd64.tgz \
+  | tar -xz
 
-Download `file.java` to `target/path/renamed.java`:
+# check it runs
+./getgh --version
+
+# maybe move to some directory in your $PATH
+mv -v ./getgh "$HOME/.local/bin/"
+```
+</details>
+
+# Use
+
+## File to file
+
+Download remote `file.sh` to local `localname.sh`:
 
 ```bash
-ghfd https://github.com/user/repo/dir/file.java target/path/renamed.java
+getgh https://github.com/user/repo/file.sh localname.sh
 ```
 
-## Disclaimer
+## File to stdout
 
-This project not endorsed or associated with GitHub.
+Just print the file on terminal:
 
-## License
+```bash
+getgh https://github.com/user/repo/file.sh
+```
+
+Or pipe to other process. For example, extract the tar contents
+to the current working directory:
+
+```bash
+getgh https://github.com/user/repo/archive.tar.gz | tar -xz
+```
+
+## File into directory
+
+Download remote `file.sh` to local `targetdir/file.sh`:
+
+```bash
+getgh https://github.com/user/repo/file.sh targetdir/
+```
+
+Or into the current working directory:
+
+```bash
+getgh https://github.com/user/repo/file.sh .
+```
+
+## Directory to directory
+
+Download all files from remote `dir` storing them inside local `targetdir`:
+
+```bash
+getgh https://github.com/user/repo/dir/ targetdir/
+```
+
+# License
 
 Copyright © 2022 [Artsiom iG](https://github.com/rtmigo).
 Released under the [MIT License](LICENSE).

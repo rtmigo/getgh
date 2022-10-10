@@ -1,5 +1,6 @@
 // Do not edit. Auto-generated
-const buildVersion='0.0.0';
-const buildDate='2022-10-08';
+const buildVersion='0.2.1';
+const buildDate='2022-10-10';
 const buildOs='linux';
-const buildShortHead='177ee24';
+const buildOsLong='Linux 5.15.0-48-generic #54-Ubuntu SMP Fri Aug 26 13:26:29 UTC 2022';
+const buildShortHead='43329f1';

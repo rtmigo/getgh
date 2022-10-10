@@ -1,1 +1,1 @@
-dart run bin/ghfd.dart "$@"
+dart run bin/getgh.dart "$@"
