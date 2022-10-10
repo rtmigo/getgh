@@ -4,6 +4,7 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:kt_dart/collection.dart';
 
 import 'source/constants.g.dart';
 import 'source/exceptions.dart';
@@ -11,7 +12,7 @@ import 'source/gh_api.dart';
 import 'source/saving.dart';
 
 class ProgramArgsException extends ExpectedException {
-  ProgramArgsException(String s) : super(s);
+  ProgramArgsException(final String s) : super(s);
 }
 
 ArgParser theParser() {
@@ -21,7 +22,7 @@ ArgParser theParser() {
   return parser;
 }
 
-ArgResults parseArgs(List<String> arguments) {
+ArgResults parseArgs(final List<String> arguments) {
   final ArgResults parsedArgs;
   try {
     parsedArgs = theParser().parse(arguments);
@@ -37,7 +38,16 @@ ArgResults parseArgs(List<String> arguments) {
   return parsedArgs;
 }
 
-void main(List<String> arguments) async {
+Future<int> cliUpdate(final Endpoint endpoint, final String target) async {
+  final results = await updateLocal(endpoint, target);
+  final ok = results.filter((p0) => p0.success).size;
+  final errors = results.size - ok;
+  print("OK: $ok, errors: $errors");
+
+  return (errors > 0) ? 1 : 0;
+}
+
+void main(final List<String> arguments) async {
   try {
     final parsedArgs = parseArgs(arguments);
     if (parsedArgs["version"] as bool) {
@@ -52,7 +62,11 @@ void main(List<String> arguments) async {
         stdout.add(await getFileContent(endpoint));
         break;
       case 2:
-        await updateLocal(endpoint, parsedArgs.rest[1]);
+        exit(await cliUpdate(endpoint, parsedArgs.rest[1]));
+        // final results = await updateLocal(endpoint, parsedArgs.rest[1]);
+        // final ok = results.filter((p0) => p0.success).size;
+        // final errors = results.size-ok;
+        // print("OK: $ok, errors: $errors");
         break;
       default:
         throw StateError("Unexpected count of args");
