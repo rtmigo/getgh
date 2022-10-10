@@ -8,8 +8,8 @@
 
 # Install
 
-To get started, you will need a
-working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
+To get started, you will need a working [GitHub
+CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
 Then get the latest `getgh` binary from
 the [Releases](https://github.com/rtmigo/getgh/releases) page.
@@ -51,20 +51,18 @@ getgh https://github.com/user/repo/file.sh
 ```
 
 Or pipe to other process. For example, extract the tar contents
-in the current working directory:
+to the current working directory:
 
 ```bash
-getgh https://github.com/user/repo/file.tar.gz | tar -xz
+getgh https://github.com/user/repo/archive.tar.gz | tar -xz
 ```
-
-
 
 ## File into directory
 
 Download remote `file.sh` to local `targetdir/file.sh`:
 
 ```bash
-getgh https://github.com/user/repo/file.sh targetdir
+getgh https://github.com/user/repo/file.sh targetdir/
 ```
 
 Or into the current working directory:
@@ -73,15 +71,12 @@ Or into the current working directory:
 getgh https://github.com/user/repo/file.sh .
 ```
 
-:exclamation: the second argument must be an existing directory on disk. Otherwise, it will
-be treated as a file name.
-
 ## Directory to directory
 
 Download all files from remote `dir` storing them inside local `targetdir`:
 
 ```bash
-getgh https://github.com/user/repo/dir/ targetdir
+getgh https://github.com/user/repo/dir/ targetdir/
 ```
 
 # License

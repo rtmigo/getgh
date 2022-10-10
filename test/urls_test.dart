@@ -39,5 +39,10 @@ void main() {
 
     expect(argToEndpoint("/repos/rtmigo/cicd/contents/stub.py").string,
         "/repos/rtmigo/cicd/contents/stub.py");
+
+    expect(
+        argToEndpoint("https://github.com/rtmigo/ghfile_test_data")
+            .string,
+        "/repos/rtmigo/ghfile_test_data/contents");
   });
 }

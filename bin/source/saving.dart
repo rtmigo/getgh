@@ -15,11 +15,32 @@ void require(bool condition, String Function() message) {
   }
 }
 
-bool _listsEqual<T>(List<T> a, List<T> b) {
+bool _pathsMoreOrLessEqual<T>(List<T> a, List<T> b) {
+  require(a[0]=="repos", () => "Unexpected first element: $a");
+  require(b[0]=="repos", () => "Unexpected first element: $b");
+
+  // Может случиться и такое. Мы просим:
+  //    /repos/user/old-repo/contents/dir/file
+  // Гитхаб возвращает:
+  //    /repos/user/renamed-repo/contents/dir/file
+  // Поэтому третьему элементу разрешаем отличаться.
+
+  // Юнит-тесты имеют дело именно с таким случаем: репозиторий был переименован.
+  // было:  https://github.com/rtmigo/ghfile_test_data
+  // стало: https://github.com/rtmigo/getgh_test_data
+  // Но TODO неплохо бы проверить и это (вместе с файлом редиректа)
+  
   if (a.length != b.length) {
     return false;
   }
+
+  const indexOrRepoName = 2;
+
   for (var i = 0; i < a.length; ++i) {
+    if (i==indexOrRepoName) {
+      // репозиторий может быть переименован, но пути будут эквивалентны
+      continue;
+    }
     if (a[i] != b[i]) {
       return false;
     }
@@ -34,14 +55,15 @@ String? _childName(Endpoint parent, Endpoint child) {
   final parentSegments = Uri.parse(parent.string).pathSegments;
   final childSegments = Uri.parse(child.string).pathSegments;
 
-  if (_listsEqual(parentSegments, childSegments)) {
+  if (_pathsMoreOrLessEqual(parentSegments, childSegments)) {
     return null;
   }
+  
 
   require(childSegments.length == parentSegments.length + 1,
       () => "Unexpected length: $parentSegments $childSegments");
   require(
-      _listsEqual(childSegments.take(childSegments.length - 1).toList(),
+      _pathsMoreOrLessEqual(childSegments.take(childSegments.length - 1).toList(),
           parentSegments),
       () => "Unexpected lhs: $parentSegments $childSegments");
 
@@ -69,11 +91,19 @@ Uint8List _getFileContent(GithubFsEntry entry) {
 Uint8List getFileContent(Endpoint ep) => _getFileContent(_getFileEntry(ep));
 
 void updateLocal(Endpoint ep, String targetPath) {
+  if (targetPath.endsWith(pathlib.separator)) {
+    Directory(targetPath).createSync(recursive: true);
+  }
+
   final targetDir = Directory(targetPath);
   if (targetDir.existsSync() &&
       targetDir.statSync().type == FileSystemEntityType.directory) {
     _updateDir(ep, targetDir);
   } else {
+    // TODO
+    // У нас нет целевого пути, и не было слэша. Мы полагаем, что там имя
+    // файла. Но если GitHub сообщит, что там каталог, мы могли бы изменить
+    // мнение
     _updateFile(ep, File(targetPath));
   }
 }
