@@ -62,8 +62,8 @@ Just print the file on terminal:
 getgh https://github.com/user/repo/file.sh
 ```
 
-Or pipe to other process. For example, run downloaded script with bash without
-saving it:
+Or pipe to other process. For example, run the script with bash without
+creating a local file:
 
 ```bash
 getgh https://github.com/user/repo/file.sh | bash
