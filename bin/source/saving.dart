@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:kt_dart/collection.dart';
 import 'package:path/path.dart' as pathlib;
 
+import 'exceptions.dart';
 import 'gh_api.dart';
 import 'sha.dart';
 
@@ -65,7 +66,24 @@ Uint8List _getFileContent(GithubFsEntry entry) {
   return base64.decode(theBase64.replaceAll('\n', ''));
 }
 
-void _updateFile(GithubFsEntry entry, File target) {
+void updateLocal(Endpoint ep, String targetPath) {
+  final targetDir = Directory(targetPath);
+  if (targetDir.existsSync() && targetDir.statSync().type == FileSystemEntityType.directory) {
+    _updateDir(ep, targetDir);
+  } else {
+    _updateFile(ep, File(targetPath));
+  }
+}
+
+void _updateFile(Endpoint ep, File target) {
+  final entries = getEntries(ep).toList();
+  if (entries.length!=1 || entries.first.type != GithubFsEntryType.file) {
+    throw ExpectedException("The address ${ep.string} not correspond to a file");
+  }
+  _updateFileByEntry(entries.single, target);
+}
+
+void _updateFileByEntry(GithubFsEntry entry, File target) {
   //print("Want save ${entry.endpoint.string} to $target");
   print("* Remote: ${entry.endpoint.string}");
   print("  Local: ${target.path}");
@@ -81,7 +99,7 @@ void _updateFile(GithubFsEntry entry, File target) {
   }
 }
 
-void updateDir(Endpoint ep, Directory target) {
+void _updateDir(Endpoint ep, Directory target) {
   _updateDirRecursive(ep, target, KtSet<String>.empty());
 }
 
@@ -106,7 +124,7 @@ void _updateDirRecursive(
             processed.plusElement(sourcePath.string));
         break;
       case GithubFsEntryType.file:
-        _updateFile(entry, File(targetPath));
+        _updateFileByEntry(entry, File(targetPath));
         break;
       default:
         throw ArgumentError.value(entry.type);

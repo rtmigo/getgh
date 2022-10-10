@@ -64,8 +64,8 @@ void main(List<String> arguments) {
       print("(c) Artsiom iG (rtmigo.github.io)");
       exit(0);
     } else {
-      updateDir(
-          argToEndpoint(parsedArgs.rest[0]), Directory(parsedArgs.rest[1]));
+      updateLocal(
+          argToEndpoint(parsedArgs.rest[0]), parsedArgs.rest[1]);
     }
   } on ProgramArgsException catch (e) {
     print("ERROR: ${e.message}");
