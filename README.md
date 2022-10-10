@@ -8,13 +8,16 @@
 
 # Install
 
-To get started, you will need a working [GitHub
-CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
-Then get the latest `getgh` binary from
-the [Releases](https://github.com/rtmigo/getgh/releases) page.
 
-<details><summary>Or get the latest release from command-line</summary>
+
+ 
+Get the latest `getgh` binary from
+   the [Releases](https://github.com/rtmigo/getgh/releases) page 
+
+
+
+<details><summary>Alternatively, get the release from the command line</summary>
 
 ## Linux:
 
@@ -31,6 +34,15 @@ wget -c -O - \
 mv -v ./getgh "$HOME/.local/bin/"
 ```
 </details>
+
+### Prerequisites
+
+You must also have installed and working [GitHub
+CLI](https://github.com/cli/cli#installation) (aka `gh`).
+
+`getgh` will not mess with tokens, running calls through the authenticated `gh`
+instead.
+
 
 # Use
 
