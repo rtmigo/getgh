@@ -30,7 +30,7 @@ class GithubFsEntry {
   /// Определено только для файлов. И не всегда, а только когда их запрашивают
   /// по одному.
   String? get contentBase64 {
-    if (this.encoding == null || this.encoding=="none") {
+    if (this.encoding == null || this.encoding == "none") {
       return null;
     }
     if (this.encoding != "base64") {
@@ -67,7 +67,8 @@ class GithubFsEntry {
   }
 
   /// Определено для файлов, но не каталогов.
-  Uri? get downloadUrl => (this.data["download_url"] as String?)?.let(Uri.parse);
+  Uri? get downloadUrl =>
+      (this.data["download_url"] as String?)?.let(Uri.parse);
 }
 
 class ApiResponse {}
@@ -90,14 +91,23 @@ class FileResponse extends ApiResponse {
 class Endpoint {
   final String string;
 
-  Endpoint(this.string);
+  Endpoint(this.string) {
+    if (!this.string.startsWith("/repos/")) {
+      throw ArgumentError(this.string);
+    }
+  }
 
   String filename() => Uri.parse(this.string).pathSegments.last;
+
+  @override
+  String toString() {
+    return "${this.runtimeType}(${json.encode(this.string)})";
+  }
 }
 
 /// На входе у нас аргумент программы. Скорее всего, заданный как http-адрес
 /// файла. На выходе будет "endpoint", к которому умеет обращаться api.
-Endpoint argToEndpoint(String url) {
+Endpoint argToEndpoint(final String url) {
   // IN: https://github.com/rtmigo/cicd/blob/dev/stub.py
   // OUT: /repos/rtmigo/cicd/contents/stub.py
 
@@ -130,15 +140,20 @@ class GhNotInstalledException extends ExpectedException {
       : super("`gh` not installed. Get it at https://cli.github.com/");
 }
 
-Iterable<GithubFsEntry> iterRemoteEntries(Endpoint ep,
-    {String executable = "gh"}) sync* {
+Future<KtList<GithubFsEntry>> listRemoteEntries(final Endpoint ep,
+    {final String executable = "gh"}) async {
+  // User-to-server requests are limited to 5,000 requests per hour and
+  // per authenticated user (2022, https://bit.ly/3RKcXfn)
+
   final ProcessResult r;
   try {
-    r = Process.runSync(executable, ["api", ep.string]);
+    r = await Process.run(executable, ["api", ep.string]);
   } on ProcessException catch (e) {
     if (e.message.contains("No such file or directory") // linux
-    || e.message.contains("The system cannot find the file specified") // windows
-    ) {
+            ||
+            e.message.contains(
+                "The system cannot find the file specified") // windows
+        ) {
       throw GhNotInstalledException();
     } else {
       rethrow;
@@ -152,10 +167,9 @@ Iterable<GithubFsEntry> iterRemoteEntries(Endpoint ep,
 
   final parsed = json.decode(r.stdout.toString());
   if (parsed is Map) {
-    yield GithubFsEntry((parsed as Map<String, dynamic>).kt);
+    return [GithubFsEntry((parsed as Map<String, dynamic>).kt)].kt;
   } else {
-    for (final item in (parsed as List)) {
-      yield GithubFsEntry((item as Map<String, dynamic>).kt);
-    }
+    return (parsed as List).kt
+        .map((item) => GithubFsEntry((item as Map<String, dynamic>).kt));
   }
 }

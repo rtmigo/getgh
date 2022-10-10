@@ -41,7 +41,7 @@ void main(List<String> arguments) async {
   try {
     final parsedArgs = parseArgs(arguments);
     if (parsedArgs["version"] as bool) {
-      print("getgh $buildVersion | $buildDate | $buildShortHead");
+      print("hubget $buildVersion | $buildDate | $buildShortHead");
       print("(c) Artsiom iG (rtmigo.github.io)");
       exit(0);
     }
@@ -62,21 +62,21 @@ void main(List<String> arguments) async {
     print("");
 
     print("Usage:");
-    print('  getgh <github-url> <target-path>');
+    print('  hubget <github-url> <target-path>');
     print('');
     print("Options:");
     print("  ${theParser().usage}");
     print('');
     print("# File to stdout:");
-    print('  getgh https://github.com/user/repo/file.ext');
+    print('  hubget https://github.com/user/repo/file.ext');
     print('');
     print("# File into target dir:");
-    print('  getgh https://github.com/user/repo/file.ext target/dir/');
+    print('  hubget https://github.com/user/repo/file.ext target/dir/');
     print('');
     print("# Dir to target dir:");
-    print('  getgh https://github.com/user/repo/ target/dir/');
+    print('  hubget https://github.com/user/repo/ target/dir/');
     print('');
-    print("See also: https://github.com/rtmigo/getgh#readme");
+    print("See also: https://github.com/rtmigo/hubget#readme");
 
     exit(64);
   } on ExpectedException catch (e) {

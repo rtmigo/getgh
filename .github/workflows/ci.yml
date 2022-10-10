@@ -59,13 +59,13 @@ jobs:
       - name: Build Exe
         run: |
           mkdir build
-          dart compile exe bin/getgh.dart -o build/getgh.exe
+          dart compile exe bin/hubget.dart -o build/hubget.exe
 
       - name: Store Exe as artifact
         uses: actions/upload-artifact@v3
         with:
           name: binary_from_${{ matrix.os }}
-          path: build/getgh.exe
+          path: build/hubget.exe
           retention-days: 3
 
 
@@ -109,7 +109,7 @@ jobs:
       - name: Create distributable archives
         run: |
           wget -c https://github.com/rtmigo/exe2dist/releases/latest/download/exe2dist_linux_amd64.tgz -O - | tar -xz
-          ./exe2dist getgh 'downloaded_artifacts/*/*' dist
+          ./exe2dist hubget 'downloaded_artifacts/*/*' dist
           #dart script/archive.dart        
 
       - uses: dart-lang/setup-dart@v1.3

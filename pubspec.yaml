@@ -1,4 +1,4 @@
-name: getgh
+name: hubget
 description: Downloads files and directories from GitHub repos
 version: 0.3.1
 
