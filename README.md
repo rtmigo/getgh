@@ -54,7 +54,7 @@ Or pipe to other process. For example, extract the tar contents
 in the current working directory:
 
 ```bash
-getgh https://github.com/user/repo/file.tar.gz | tar -xz
+getgh https://github.com/user/repo/archive.tar.gz | tar -xz
 ```
 
 
@@ -64,6 +64,8 @@ getgh https://github.com/user/repo/file.tar.gz | tar -xz
 Download remote `file.sh` to local `targetdir/file.sh`:
 
 ```bash
+mkdir targetdir  # the directory must exist
+
 getgh https://github.com/user/repo/file.sh targetdir
 ```
 
@@ -73,14 +75,13 @@ Or into the current working directory:
 getgh https://github.com/user/repo/file.sh .
 ```
 
-:exclamation: the second argument must be an existing directory on disk. Otherwise, it will
-be treated as a file name.
-
 ## Directory to directory
 
 Download all files from remote `dir` storing them inside local `targetdir`:
 
 ```bash
+mkdir targetdir  # the directory must exist
+
 getgh https://github.com/user/repo/dir/ targetdir
 ```
 
