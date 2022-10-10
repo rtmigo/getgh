@@ -62,11 +62,11 @@ Just print the file on terminal:
 getgh https://github.com/user/repo/file.sh
 ```
 
-Or pipe to other process. For example, extract the tar contents
-to the current working directory:
+Or pipe to other process. For example, run the script with bash without
+creating a local file:
 
 ```bash
-getgh https://github.com/user/repo/archive.tar.gz | tar -xz
+getgh https://github.com/user/repo/file.sh | bash
 ```
 
 ## File into directory
