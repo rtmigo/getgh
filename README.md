@@ -1,7 +1,5 @@
 # [getgh](https://github.com/rtmigo/getgh) #experimental  
 
-GH File Downloader
-
 * CLI utility for Linux, MacOS, Windows
 * **Downloads individual files from GitHub repos**
 * Files may be public or private (to which you have access)
@@ -23,7 +21,7 @@ the [Releases](https://github.com/rtmigo/getgh/releases) page.
 ```bash
 # download and extract to current working directory
 wget -c -O - \
-  https://github.com/rtmigo/getgh/releases/latest/download/ghfd_linux_amd64.tgz \
+  https://github.com/rtmigo/getgh/releases/latest/download/getgh_linux_amd64.tgz \
   | tar -xz
 
 # check it runs
@@ -36,28 +34,21 @@ mv -v ./getgh "$HOME/.local/bin/"
 
 ## Use
 
-Download `file.java` to current working directory:
+### File to directory
+
+Download remote `file.sh` to local `targetdir/file.sh`:
 
 ```bash
-getgh https://github.com/user/repo/dir/file.java .
+getgh https://github.com/user/repo/file.sh targetdir
 ```
 
+### Directory to directory
 
-Download `file.java` to `target/path/file.java`:
+Download all files from remote `dir` storing them inside local `targetdir`:
 
 ```bash
-getgh https://github.com/user/repo/dir/file.java target/path/
+getgh https://github.com/user/repo/dir/ targetdir
 ```
-
-Download `file.java` to `target/path/renamed.java`:
-
-```bash
-getgh https://github.com/user/repo/dir/file.java target/path/renamed.java
-```
-
-## Disclaimer
-
-This project not endorsed or associated with GitHub.
 
 ## License
 
