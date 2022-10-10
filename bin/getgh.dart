@@ -60,7 +60,7 @@ void main(List<String> arguments) {
   try {
     final parsedArgs = parseArgs(arguments);
     if (parsedArgs["version"] as bool) {
-      print("ghfd $buildVersion | $buildDate | $buildShortHead");
+      print("getgh $buildVersion | $buildDate | $buildShortHead");
       print("(c) Artsiom iG (rtmigo.github.io)");
       exit(0);
     } else {
@@ -72,16 +72,16 @@ void main(List<String> arguments) {
     print("");
 
     print("Usage:");
-    print('  ghfd <github-file-url> <target-path>');
+    print('  getgh <github-file-url> <target-path>');
     print('');
     print("Options:");
     print("  ${theParser().usage}");
     print('');
     print("Examples:");
-    print('  ghfd https://github.com/user/repo/file.ext saved.ext');
-    print('  ghfd https://github.com/user/repo/file.ext target/dir/');
+    print('  getgh https://github.com/user/repo/file.ext target/dir/');
+    print('  getgh https://github.com/user/repo/ target/dir/');
     print('');
-    print("See also: https://github.com/rtmigo/ghfd#readme");
+    print("See also: https://github.com/rtmigo/getgh#readme");
 
     exit(64);
   } on ExpectedException catch (e) {
