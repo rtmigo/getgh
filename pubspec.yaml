@@ -1,6 +1,6 @@
 name: getgh
-description: GH file downloader. Downloads individual files from GitHub repos
-version: 0.2.1
+description: Downloads files and directories from GitHub repos
+version: 0.3.0
 
 environment:
   sdk: '>=2.18.0 <3.0.0'
@@ -9,13 +9,11 @@ dev_dependencies:
   lints: ^2.0.0
   test: ^1.16.0
   yaml: ^3.1.1
-  uuid: ^3.0.6
   archive: ^3.3.1
 
 dependencies:
   args: ^2.3.1
-  crypto: ^3.0.2
-  #either_dart: ^0.2.0
+  crypto: ^3.0.2  # sha
   kt_dart: ^1.0.0
   path: ^1.8.2
 

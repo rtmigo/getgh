@@ -4,29 +4,11 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart' as path;
 
 import 'source/constants.g.dart';
 import 'source/exceptions.dart';
 import 'source/gh_api.dart';
 import 'source/saving.dart';
-
-/// Программе на вход подали [pathArg], но мы не знаем, это каталог или имя
-/// целевого файла. Также мы знаем, что файл в репозитории называется
-/// [remoteBasename].
-///
-/// Возвращаем целевое имя файла, куда и правда собираемся сохранить.
-File argToTargetFile(String pathArg, Endpoint ep) {
-  bool endsWithSlash() => pathArg.endsWith('/') || pathArg.endsWith('\\');
-  bool isExistingDir() =>
-      File(pathArg).statSync().type == FileSystemEntityType.directory;
-
-  if (endsWithSlash() || isExistingDir()) {
-    return File(path.join(pathArg, ep.filename()));
-  } else {
-    return File(pathArg);
-  }
-}
 
 class ProgramArgsException extends ExpectedException {
   ProgramArgsException(String s) : super(s);
@@ -75,8 +57,6 @@ void main(List<String> arguments) {
       default:
         throw StateError("Unexpected count of args");
     }
-
-
   } on ProgramArgsException catch (e) {
     print("ERROR: ${e.message}");
     print("");

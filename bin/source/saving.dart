@@ -78,6 +78,10 @@ void updateLocal(Endpoint ep, String targetPath) {
       targetDir.statSync().type == FileSystemEntityType.directory) {
     _updateDir(ep, targetDir);
   } else {
+    // TODO
+    // У нас нет целевого пути, и не было слэша. Мы полагаем, что там имя
+    // файла. Но если GitHub сообщит, что там каталог, мы могли бы изменить
+    // мнение
     _updateFile(ep, File(targetPath));
   }
 }
