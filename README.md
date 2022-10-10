@@ -1,4 +1,4 @@
-# [ghfd](https://github.com/rtmigo/ghfd) #experimental  
+# [getgh](https://github.com/rtmigo/getgh) #experimental  
 
 GH File Downloader
 
@@ -13,8 +13,8 @@ GH File Downloader
 To get started, you will need a
 working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
-Then get the latest `ghfd` binary from
-the [Releases](https://github.com/rtmigo/ghfd/releases) page.
+Then get the latest `getgh` binary from
+the [Releases](https://github.com/rtmigo/getgh/releases) page.
 
 <details><summary>Or get the latest release from command-line</summary>
 
@@ -23,14 +23,14 @@ the [Releases](https://github.com/rtmigo/ghfd/releases) page.
 ```bash
 # download and extract to current working directory
 wget -c -O - \
-  https://github.com/rtmigo/ghfd/releases/latest/download/ghfd_linux_amd64.tgz \
+  https://github.com/rtmigo/getgh/releases/latest/download/ghfd_linux_amd64.tgz \
   | tar -xz
 
 # check it runs
-./ghfd --version
+./getgh --version
 
 # maybe move to some directory in your $PATH
-mv -v ./ghfd "$HOME/.local/bin/"
+mv -v ./getgh "$HOME/.local/bin/"
 ```
 </details>
 
@@ -39,20 +39,20 @@ mv -v ./ghfd "$HOME/.local/bin/"
 Download `file.java` to current working directory:
 
 ```bash
-ghfd https://github.com/user/repo/dir/file.java .
+getgh https://github.com/user/repo/dir/file.java .
 ```
 
 
 Download `file.java` to `target/path/file.java`:
 
 ```bash
-ghfd https://github.com/user/repo/dir/file.java target/path/
+getgh https://github.com/user/repo/dir/file.java target/path/
 ```
 
 Download `file.java` to `target/path/renamed.java`:
 
 ```bash
-ghfd https://github.com/user/repo/dir/file.java target/path/renamed.java
+getgh https://github.com/user/repo/dir/file.java target/path/renamed.java
 ```
 
 ## Disclaimer
