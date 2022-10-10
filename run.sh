@@ -1,1 +1,1 @@
-dart run bin/getgh.dart "$@"
+dart run bin/hubget.dart "$@"

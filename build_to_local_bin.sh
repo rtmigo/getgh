@@ -2,6 +2,6 @@
 set -e && cd "${0%/*}"
 
 dart script/update_constants.dart
-dart compile exe bin/getgh.dart -o build/getgh
-mv -v build/getgh "$HOME/.local/bin/"
-getgh -v
+dart compile exe bin/hubget.dart -o build/hubget
+mv -v build/hubget "$HOME/.local/bin/"
+hubget -v

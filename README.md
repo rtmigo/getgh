@@ -1,4 +1,4 @@
-# [getgh](https://github.com/rtmigo/getgh) #experimental  
+# [hubget](https://github.com/rtmigo/hubget) #experimental  
 
 * CLI utility for Linux, MacOS, Windows
 * **Downloads individual files from GitHub repos**
@@ -12,8 +12,8 @@
 
 
  
-Get the latest `getgh` binary from
-   the [Releases](https://github.com/rtmigo/getgh/releases) page 
+Get the latest `hubget` binary from
+   the [Releases](https://github.com/rtmigo/hubget/releases) page 
 
 
 
@@ -24,14 +24,14 @@ Get the latest `getgh` binary from
 ```bash
 # download and extract to current working directory
 wget -c -O - \
-  https://github.com/rtmigo/getgh/releases/latest/download/getgh_linux_amd64.tgz \
+  https://github.com/rtmigo/hubget/releases/latest/download/hubget_linux_amd64.tgz \
   | tar -xz
 
 # check it runs
-./getgh --version
+./hubget --version
 
 # maybe move to some directory in your $PATH
-mv -v ./getgh "$HOME/.local/bin/"
+mv -v ./hubget "$HOME/.local/bin/"
 ```
 </details>
 
@@ -40,7 +40,7 @@ mv -v ./getgh "$HOME/.local/bin/"
 You must also have installed and working [GitHub
 CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
-`getgh` will not mess with tokens, running calls through the authenticated `gh`
+`hubget` will not mess with tokens, running calls through the authenticated `gh`
 instead.
 
 
@@ -51,7 +51,7 @@ instead.
 Download remote `file.sh` to local `localname.sh`:
 
 ```bash
-getgh https://github.com/user/repo/file.sh localname.sh
+hubget https://github.com/user/repo/file.sh localname.sh
 ```
 
 ## File to stdout
@@ -59,14 +59,15 @@ getgh https://github.com/user/repo/file.sh localname.sh
 Just print the file on terminal:
 
 ```bash
-getgh https://github.com/user/repo/file.sh
+hubget https://github.com/user/repo/file.sh
 ```
 
 Or pipe to other process. For example, run the script with bash without
-creating a local file:
+creating a local file
+:
 
 ```bash
-getgh https://github.com/user/repo/file.sh | bash
+hubget https://github.com/user/repo/file.sh | bash
 ```
 
 ## File into directory
@@ -74,13 +75,13 @@ getgh https://github.com/user/repo/file.sh | bash
 Download remote `file.sh` to local `targetdir/file.sh`:
 
 ```bash
-getgh https://github.com/user/repo/file.sh targetdir/
+hubget https://github.com/user/repo/file.sh targetdir/
 ```
 
 Or into the current working directory:
 
 ```bash
-getgh https://github.com/user/repo/file.sh .
+hubget https://github.com/user/repo/file.sh .
 ```
 
 ## Directory to directory
@@ -88,7 +89,7 @@ getgh https://github.com/user/repo/file.sh .
 Download all files from remote `dir` storing them inside local `targetdir`:
 
 ```bash
-getgh https://github.com/user/repo/dir/ targetdir/
+hubget https://github.com/user/repo/dir/ targetdir/
 ```
 
 # License
