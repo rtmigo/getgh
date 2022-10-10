@@ -2,10 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:args/args.dart';
-
 import 'package:path/path.dart' as path;
 
 import 'source/constants.g.dart';
@@ -49,7 +47,8 @@ ArgResults parseArgs(List<String> arguments) {
     throw ProgramArgsException(e.message);
   }
 
-  if (parsedArgs.rest.length != 2 && !(parsedArgs["version"] as bool)) {
+  if (![1, 2].contains(parsedArgs.rest.length) &&
+      !(parsedArgs["version"] as bool)) {
     throw ProgramArgsException("Invalid number of arguments.");
   }
 
@@ -63,10 +62,21 @@ void main(List<String> arguments) {
       print("getgh $buildVersion | $buildDate | $buildShortHead");
       print("(c) Artsiom iG (rtmigo.github.io)");
       exit(0);
-    } else {
-      updateLocal(
-          argToEndpoint(parsedArgs.rest[0]), parsedArgs.rest[1]);
     }
+
+    final endpoint = argToEndpoint(parsedArgs.rest[0]);
+    switch (parsedArgs.rest.length) {
+      case 1:
+        stdout.add(getFileContent(endpoint));
+        break;
+      case 2:
+        updateLocal(endpoint, parsedArgs.rest[1]);
+        break;
+      default:
+        throw StateError("Unexpected count of args");
+    }
+
+
   } on ProgramArgsException catch (e) {
     print("ERROR: ${e.message}");
     print("");

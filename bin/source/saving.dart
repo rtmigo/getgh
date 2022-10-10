@@ -66,22 +66,29 @@ Uint8List _getFileContent(GithubFsEntry entry) {
   return base64.decode(theBase64.replaceAll('\n', ''));
 }
 
+Uint8List getFileContent(Endpoint ep) => _getFileContent(_getFileEntry(ep));
+
 void updateLocal(Endpoint ep, String targetPath) {
   final targetDir = Directory(targetPath);
-  if (targetDir.existsSync() && targetDir.statSync().type == FileSystemEntityType.directory) {
+  if (targetDir.existsSync() &&
+      targetDir.statSync().type == FileSystemEntityType.directory) {
     _updateDir(ep, targetDir);
   } else {
     _updateFile(ep, File(targetPath));
   }
 }
 
-void _updateFile(Endpoint ep, File target) {
+GithubFsEntry _getFileEntry(Endpoint ep) {
   final entries = getEntries(ep).toList();
-  if (entries.length!=1 || entries.first.type != GithubFsEntryType.file) {
-    throw ExpectedException("The address ${ep.string} not correspond to a file");
+  if (entries.length != 1 || entries.first.type != GithubFsEntryType.file) {
+    throw ExpectedException(
+        "The address ${ep.string} not correspond to a file");
   }
-  _updateFileByEntry(entries.single, target);
+  return entries.single;
 }
+
+void _updateFile(Endpoint ep, File target) =>
+    _updateFileByEntry(_getFileEntry(ep), target);
 
 void _updateFileByEntry(GithubFsEntry entry, File target) {
   //print("Want save ${entry.endpoint.string} to $target");

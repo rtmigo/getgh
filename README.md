@@ -36,11 +36,28 @@ mv -v ./getgh "$HOME/.local/bin/"
 
 ## File to file
 
-Download remote `file.sh` to local `newname.sh`:
+Download remote `file.sh` to local `localname.sh`:
 
 ```bash
-getgh https://github.com/user/repo/file.sh newname.sh
+getgh https://github.com/user/repo/file.sh localname.sh
 ```
+
+## File to stdout
+
+Just print the file on terminal:
+
+```bash
+getgh https://github.com/user/repo/file.sh
+```
+
+Or pipe to other process. For example, extract the tar contents
+in the current working directory:
+
+```bash
+getgh https://github.com/user/repo/file.tar.gz | tar -xz
+```
+
+
 
 ## File into directory
 
@@ -49,6 +66,15 @@ Download remote `file.sh` to local `targetdir/file.sh`:
 ```bash
 getgh https://github.com/user/repo/file.sh targetdir
 ```
+
+Or into the current working directory:
+
+```bash
+getgh https://github.com/user/repo/file.sh .
+```
+
+:exclamation: the second argument must be an existing directory on disk. Otherwise, it will
+be treated as a file name.
 
 ## Directory to directory
 
