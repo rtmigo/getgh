@@ -64,8 +64,7 @@ String? _childName(final Endpoint parent, final Endpoint child) {
       () => "Unexpected length: $parentSegments $childSegments");
   require(
       _pathsEqualExceptRepoName(
-          childSegments.kt.take(childSegments.length - 1),
-          parentSegments.kt),
+          childSegments.kt.take(childSegments.length - 1), parentSegments.kt),
       () => "Unexpected lhs: $parentSegments $childSegments");
 
   return childSegments.last;
@@ -74,7 +73,7 @@ String? _childName(final Endpoint parent, final Endpoint child) {
 Future<Uint8List> _getFileContent(final GithubFsEntry entry) async {
   // контент может быт уже внутри entry (в виде base64), а может и не быть.
 
-  print(entry.data);
+  //print(entry.data);
   //print(entry.downloadUrl);
   //print(entry.contentBase64);
 
@@ -119,7 +118,8 @@ class FileContentNotAvailableException extends ExpectedException {
 Future<Uint8List> getFileContent(final Endpoint ep) async =>
     _getFileContent(await _getFileEntry(ep));
 
-Future<void> updateLocal(final Endpoint ep, final String targetPath) async {
+Future<KtList<UpdateResult>> updateLocal(
+    final Endpoint ep, final String targetPath) async {
   if (targetPath.endsWith(pathlib.separator)) {
     Directory(targetPath).createSync(recursive: true);
   }
@@ -127,13 +127,13 @@ Future<void> updateLocal(final Endpoint ep, final String targetPath) async {
   final targetDir = Directory(targetPath);
   if (targetDir.existsSync() &&
       targetDir.statSync().type == FileSystemEntityType.directory) {
-    await _updateDir(ep, targetDir);
+    return _updateDir(ep, targetDir);
   } else {
     // TODO
     // У нас нет целевого пути, и не было слэша. Мы полагаем, что там имя
     // файла. Но если GitHub сообщит, что там каталог, мы могли бы изменить
     // мнение
-    await _updateFile(ep, File(targetPath));
+    return inFutureWrapToList(ep, ()=>_updateFile(ep, File(targetPath)));
   }
 }
 
@@ -146,10 +146,10 @@ Future<GithubFsEntry> _getFileEntry(final Endpoint ep) async {
   return entries.single();
 }
 
-Future<void> _updateFile(final Endpoint ep, final File target) async =>
+Future<bool> _updateFile(final Endpoint ep, final File target) async =>
     _updateFileByEntry(await _getFileEntry(ep), target);
 
-Future<void> _updateFileByEntry(
+Future<bool> _updateFileByEntry(
     final GithubFsEntry entry, final File target) async {
   final lines = List<String>.empty(growable: true);
   void printLater(final String s) => lines.add(s);
@@ -158,9 +158,7 @@ Future<void> _updateFileByEntry(
     printLater("* Remote: ${entry.endpoint.string}");
     printLater("  Local: ${target.path}");
     if (target.existsSync() &&
-        target
-            .statSync()
-            .size == entry.size &&
+        target.statSync().size == entry.size &&
         fileToGhSha(target) == entry.sha) {
       printLater("  The file is up to date (not modified)");
     } else {
@@ -172,20 +170,22 @@ Future<void> _updateFileByEntry(
       } on FileContentNotAvailableException catch (_) {
         // такое, например, в случае подмодулей
         printLater("  ERROR: no content");
+        return false;
       }
     }
   } finally {
     lines.forEach(print);
   }
+  return true;
 }
 
-Future<void> _updateDir(final Endpoint ep, final Directory target) async {
-  await _updateDirRecursive(ep, target, KtSet<String>.empty());
-}
+Future<KtList<UpdateResult>> _updateDir(
+        final Endpoint ep, final Directory target) =>
+    _updateDirRecursive(ep, target, KtSet<String>.empty());
 
 /// Аргумент [processed] нужен только для того, чтобы предотвратить
 /// бесконечную рекурсию по ошибке.
-Future<void> _updateDirRecursive(final Endpoint sourcePath,
+Future<KtList<UpdateResult>> _updateDirRecursive(final Endpoint sourcePath,
     final Directory target, final KtSet<String> processed) async {
   // TODO Проверять sha каталогов (не только файлов)
 
@@ -193,7 +193,7 @@ Future<void> _updateDirRecursive(final Endpoint sourcePath,
     throw ArgumentError("This endpoint already processed.");
   }
 
-  final futures = List<Future<void>>.empty(growable: true);
+  final futures = List<Future<KtList<UpdateResult>>>.empty(growable: true);
 
   for (final entry in (await listRemoteEntries(sourcePath)).iter) {
     final childName = _childName(sourcePath, entry.endpoint);
@@ -211,12 +211,32 @@ Future<void> _updateDirRecursive(final Endpoint sourcePath,
             processed.plusElement(sourcePath.string)));
         break;
       case GithubFsEntryType.file:
-        futures.add(_updateFileByEntry(entry, File(targetPath)));
+        futures.add(inFutureWrapToList(
+            entry.endpoint, () => _updateFileByEntry(entry, File(targetPath))));
         break;
       default:
         throw ArgumentError.value(entry.type);
     }
   }
 
-  await Future.wait(futures, eagerError: true);
+  final KtList<KtList<UpdateResult>> childResults =
+      (await Future.wait(futures, eagerError: true)).kt;
+  return childResults.flatten();
+}
+
+/// Преобразует результат отдельного запроса отдельного файла (возвращающий
+/// bool) - в список
+Future<KtList<UpdateResult>> inFutureWrapToList(
+  final Endpoint endpoint,
+  final Future<bool> Function() block,
+) async {
+  return [UpdateResult(endpoint, await block())].kt;
+}
+
+/// Результат обновления отдельного файл
+class UpdateResult {
+  final Endpoint endpoint;
+  final bool success;
+
+  UpdateResult(this.endpoint, this.success);
 }

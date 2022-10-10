@@ -1,25 +1,32 @@
 # [hubget](https://github.com/rtmigo/hubget) #experimental  
 
-* CLI utility for Linux, MacOS, Windows
-* **Downloads individual files from GitHub repos**
-* Files may be public or private (to which you have access)
-* Uses `gh` API internally
+CLI for Linux, MacOS, Windows
+
+* Downloads files and directories from GitHub repos
 * Does not create/modify local Git repos
+* Files may be public or private (to which you have access)
+
+
 
 # Install
 
+## Make sure you have `gh`
 
+`hubget` will use `gh` internally. So you not need to mess with additional
+authentication as long as you have `gh`.
 
+`gh` is an official [GitHub CLI](https://cli.github.com/). Install it [from
+here](https://github.com/cli/cli#installation).
 
- 
-Get the latest `hubget` binary from
-   the [Releases](https://github.com/rtmigo/hubget/releases) page 
+## Install `hubget`
 
+Get the latest `hubget` binary from the
+[Releases](https://github.com/rtmigo/hubget/releases) page
 
 
 <details><summary>Alternatively, get the release from the command line</summary>
 
-## Linux:
+### Linux
 
 ```bash
 # download and extract to current working directory
@@ -34,15 +41,6 @@ wget -c -O - \
 mv -v ./hubget "$HOME/.local/bin/"
 ```
 </details>
-
-### Prerequisites
-
-You must also have installed and working [GitHub
-CLI](https://github.com/cli/cli#installation) (aka `gh`).
-
-`hubget` will not mess with tokens, running calls through the authenticated `gh`
-instead.
-
 
 # Use
 
@@ -62,9 +60,8 @@ Just print the file on terminal:
 hubget https://github.com/user/repo/file.sh
 ```
 
-Or pipe to other process. For example, run the script with bash without
-creating a local file
-:
+Or pipe to other process. For example, run the bash script without
+creating a file:
 
 ```bash
 hubget https://github.com/user/repo/file.sh | bash
@@ -78,7 +75,7 @@ Download remote `file.sh` to local `targetdir/file.sh`:
 hubget https://github.com/user/repo/file.sh targetdir/
 ```
 
-Or into the current working directory:
+Or into the current working directory (note the dot at the end):
 
 ```bash
 hubget https://github.com/user/repo/file.sh .
@@ -91,6 +88,10 @@ Download all files from remote `dir` storing them inside local `targetdir`:
 ```bash
 hubget https://github.com/user/repo/dir/ targetdir/
 ```
+
+## Disclaimer
+
+This project not endorsed or associated with GitHub.
 
 # License
 

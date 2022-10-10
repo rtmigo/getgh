@@ -1,8 +1,10 @@
 import 'dart:io';
 
+
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
+import '../bin/hubget.dart';
 import '../bin/source/gh_api.dart';
 import '../bin/source/saving.dart';
 
@@ -29,7 +31,7 @@ void main() {
       expect(td!.listSync().length, 0);
       expect(target.existsSync(), false);
 
-      await updateLocal(
+      await cliUpdate(
           argToEndpoint(
               "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
           target.path);
@@ -43,7 +45,7 @@ void main() {
 
       expect(td!.listSync().length, 0);
 
-      await updateLocal(
+      await cliUpdate(
           argToEndpoint(
               "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
           "${target.path}${path.separator}");
@@ -58,7 +60,7 @@ void main() {
       expect(td!.listSync().length, 0);
       expect(File(fn).existsSync(), false);
 
-      await updateLocal(
+      await cliUpdate(
           argToEndpoint(
               "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
           td!.path);
@@ -73,7 +75,7 @@ void main() {
       expect(td!.listSync().length, 0);
       expect(File(fn).existsSync(), false);
 
-      await updateLocal(
+      await cliUpdate(
           argToEndpoint(
               "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
           td!.path + path.separator);
@@ -84,7 +86,7 @@ void main() {
 
 
     test('download flat dir', () async {
-      await updateLocal(
+      final exitCode = await cliUpdate(
           argToEndpoint(
               "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/"),
           td!.path);
@@ -93,10 +95,11 @@ void main() {
       expect(File(path.join(td!.path, "a.md")).existsSync(), true);
       expect(File(path.join(td!.path, "b.md")).existsSync(), true);
       expect(File(path.join(td!.path, "c.md")).existsSync(), true);
+      expect(exitCode, 0);
     });
 
     test('download flat dir with extra slash', () async {
-      await updateLocal(
+      await cliUpdate(
           argToEndpoint(
               "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/"),
           "${td!.path}/");
@@ -108,7 +111,7 @@ void main() {
     });
 
     test('download subdirs dir', () async {
-      await updateLocal(
+      await cliUpdate(
           argToEndpoint(
               "https://github.com/rtmigo/ghfile_test_data/blob/dev/"),
           td!.path);
@@ -122,7 +125,7 @@ void main() {
     });
 
     test('download whole repo by offical url', () async {
-      await updateLocal(
+      final exitCode = await cliUpdate(
           argToEndpoint(
             // no BLOB or TREE
               "https://github.com/rtmigo/ghfile_test_data"),
@@ -132,11 +135,12 @@ void main() {
       expect(File(path.join(td!.path, "dir-abc", "a.md")).existsSync(), true);
       expect(File(path.join(td!.path, "dir-abc", "b.md")).existsSync(), true);
       expect(File(path.join(td!.path, "dir-abc", "c.md")).existsSync(), true);
+      expect(exitCode, isNot(0)); // потому что submodule не скачан
     });
   }
 
   test('download binary 5mb file', () async {
-    await updateLocal(
+    await cliUpdate(
         argToEndpoint(
             "https://github.com/rtmigo/exe2dist/blob/master/test/executables/ghcp_osx_amd64"),
         td!.path);
