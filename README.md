@@ -37,7 +37,7 @@ mv -v ./getgh "$HOME/.local/bin/"
 
 ### Prerequisites
 
-You must have installed and working [GitHub
+You must also have installed and working [GitHub
 CLI](https://github.com/cli/cli#installation) (aka `gh`).
 
 `getgh` will not mess with tokens, running calls through the authenticated `gh`
