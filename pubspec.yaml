@@ -1,6 +1,6 @@
-name: getgh
+name: hubget
 description: Downloads files and directories from GitHub repos
-version: 0.3.1
+version: 0.4.0
 
 environment:
   sdk: '>=2.18.0 <3.0.0'
