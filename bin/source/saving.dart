@@ -111,7 +111,6 @@ class HttpErrorException extends ExpectedException {
   HttpErrorException(String s): super(s);
 }
 
-
 class FileContentNotAvailableException extends ExpectedException {
   FileContentNotAvailableException(Endpoint ep): super("File content not available");
 }
