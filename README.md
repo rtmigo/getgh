@@ -8,11 +8,8 @@
 
 # Install
 
-### Prerequisites
 
-Installed and working [GitHub CLI](https://github.com/cli/cli#installation) (aka `gh`)
 
-### Installation
 
  
 Get the latest `getgh` binary from
@@ -38,6 +35,13 @@ mv -v ./getgh "$HOME/.local/bin/"
 ```
 </details>
 
+### Prerequisites
+
+You must also have installed and working [GitHub
+CLI](https://github.com/cli/cli#installation) (aka `gh`).
+
+`getgh` will not mess with tokens, running calls through the authenticated `gh`
+instead.
 
 
 # Use
