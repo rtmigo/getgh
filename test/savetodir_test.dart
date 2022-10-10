@@ -127,15 +127,9 @@ void main() {
             "https://github.com/rtmigo/ghfile_test_data"),
         td!.path);
 
-    expect(td!.listSync(recursive: true).length, 3);
+    expect(td!.listSync(recursive: true).length, greaterThan(5));
     expect(File(path.join(td!.path, "dir-abc", "a.md")).existsSync(), true);
     expect(File(path.join(td!.path, "dir-abc", "b.md")).existsSync(), true);
     expect(File(path.join(td!.path, "dir-abc", "c.md")).existsSync(), true);
   });
-
-
-  //
-
 }
-
-
