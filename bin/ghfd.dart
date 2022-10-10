@@ -5,12 +5,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:args/args.dart';
-import 'package:either_dart/either.dart';
+
 import 'package:path/path.dart' as path;
 
 import 'source/constants.g.dart';
+import 'source/exceptions.dart';
 import 'source/gh_api.dart';
-import 'source/sha.dart';
+import 'source/saving.dart';
 
 /// Программе на вход подали [pathArg], но мы не знаем, это каталог или имя
 /// целевого файла. Также мы знаем, что файл в репозитории называется
@@ -29,37 +30,8 @@ File argToTargetFile(String pathArg, Endpoint ep) {
   }
 }
 
-Uint8List? readIfExists(File file) {
-  try {
-    return file.readAsBytesSync();
-  } on OSError {
-    return null;
-  }
-}
-
-Either<String, Object> downloadToFile(Endpoint ep, File target) {
-  print("Endpoint: ${ep.string}");
-  print("  Target: ${target.path}");
-
-  return ghApi(ep).map((apiResult) {
-    if (target.existsSync() && fileToGhSha(target) == apiResult.sha) {
-      print("  The file was up to date (not modified)");
-      return Right(Object());
-    } else {
-      target.writeAsBytesSync(apiResult.content());
-      print("  File updated");
-      return Right(Object());
-    }
-  });
-}
-
-void download(String srcAddr, String targetFileOrDir) {
-  argToEndpoint(srcAddr)
-      .then((ep) => downloadToFile(ep, argToTargetFile(targetFileOrDir, ep)))
-      .either((left) {
-    print("ERROR: $left");
-    exit(1);
-  }, (right) => null);
+class ProgramArgsException extends ExpectedException {
+  ProgramArgsException(String s) : super(s);
 }
 
 ArgParser theParser() {
@@ -69,24 +41,34 @@ ArgParser theParser() {
   return parser;
 }
 
-Either<String, ArgResults> parseArgs(List<String> arguments) {
+ArgResults parseArgs(List<String> arguments) {
   final ArgResults parsedArgs;
   try {
     parsedArgs = theParser().parse(arguments);
   } on FormatException catch (e) {
-    return Left(e.message);
+    throw ProgramArgsException(e.message);
   }
 
-  if (parsedArgs.rest.length != 2 && !parsedArgs["version"]) {
-    return Left("Invalid number of arguments.");
+  if (parsedArgs.rest.length != 2 && !(parsedArgs["version"] as bool)) {
+    throw ProgramArgsException("Invalid number of arguments.");
   }
 
-  return Right(parsedArgs);
+  return parsedArgs;
 }
 
 void main(List<String> arguments) {
-  parseArgs(arguments).either((left) {
-    print("ERROR: $left");
+  try {
+    final parsedArgs = parseArgs(arguments);
+    if (parsedArgs["version"] as bool) {
+      print("ghfd $buildVersion | $buildDate | $buildShortHead");
+      print("(c) Artsiom iG (rtmigo.github.io)");
+      exit(0);
+    } else {
+      updateDir(
+          argToEndpoint(parsedArgs.rest[0]), Directory(parsedArgs.rest[1]));
+    }
+  } on ProgramArgsException catch (e) {
+    print("ERROR: ${e.message}");
     print("");
 
     print("Usage:");
@@ -102,14 +84,8 @@ void main(List<String> arguments) {
     print("See also: https://github.com/rtmigo/ghfd#readme");
 
     exit(64);
-  }, (parsedArgs) {
-    if (parsedArgs["version"]) {
-      print("ghfd $buildVersion | $buildDate | $buildShortHead");
-      print("(c) Artsiom iG (rtmigo.github.io)");
-      //print("built on ($buildOsLong)");
-      exit(0);
-    } else {
-      download(parsedArgs.rest[0], parsedArgs.rest[1]);
-    }
-  });
+  } on ExpectedException catch (e) {
+    print("ERROR: ${e.message}");
+    exit(1);
+  }
 }
