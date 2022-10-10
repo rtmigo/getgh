@@ -89,7 +89,7 @@ Download all files from remote `dir` storing them inside local `targetdir`:
 hubget https://github.com/user/repo/dir/ targetdir/
 ```
 
-## Disclaimer
+# Disclaimer
 
 This project not endorsed or associated with GitHub.
 
