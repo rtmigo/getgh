@@ -137,7 +137,9 @@ Iterable<GithubFsEntry> getEntries(Endpoint ep,
   try {
     r = Process.runSync(executable, ["api", ep.string]);
   } on ProcessException catch (e) {
-    if (e.message == "No such file or directory") {
+    if (e.message.contains("No such file or directory") // linux
+    || e.message.contains("The system cannot find the file specified") // windows
+    ) {
       throw GhNotInstalledException();
     } else {
       rethrow;
