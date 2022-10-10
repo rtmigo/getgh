@@ -4,13 +4,13 @@ import 'dart:collection';
 
 // TODO add to schedulers
 
-abstract class Task<R> {
+abstract class _Task<R> {
   Future<R> get result;
 
   bool get isCompleted;
 }
 
-class CompletableTask<R> implements Task<R> {
+class _CompletableTask<R> implements _Task<R> {
   final Future<R> Function() function;
 
   @override
@@ -21,31 +21,34 @@ class CompletableTask<R> implements Task<R> {
 
   Completer<R> completer = Completer<R>();
 
-  CompletableTask(this.function);
+  _CompletableTask(this.function);
 }
 
-class TaskPool<R> {
+class ConcurrentScheduler<R> {
   final int concurrency;
-  final _tasks = Queue<CompletableTask<R>>();
+  final _tasks = Queue<_CompletableTask<R>>();
 
-  TaskPool({this.concurrency = 8});
+  ConcurrentScheduler({this.concurrency = 8});
 
-  Task<R> add(final Future<R> Function() func) {
-    final t = CompletableTask(func);
+  _Task<R> _add(final Future<R> Function() func) {
+    final t = _CompletableTask(func);
     _tasks.addLast(t);
     _maybeRunTasks();
     return t;
   }
 
-  Future<R> run(final Future<R> Function() func) => add(func).result;
+  Future<R> run(final Future<R> Function() func) => _add(func).result;
 
   int _currentlyRunning = 0;
   int get currentlyRunning => _currentlyRunning;
 
+  /// Это синхронная функция, которая запускает задачи асинхронно рекурсивно.
+  /// После выполнения каждая задача снова вызывает [_maybeRunTasks].
+  ///
+  /// Количество вложенных вызовов может почти достигать длины длины очереди.
+  /// Тест с миллионом запускаемых задач показал, что это не приводит к
+  /// проблемам вроде переполнения стека.
   void _maybeRunTasks() {
-    // Это синхронная функция, которая запускает задачи асинхронно рекурсивно.
-    // При избыточной длине очереди мы (наверно) можем столкнуться с
-    // переполнением стека.
 
     assert (_currentlyRunning<=concurrency);  
     
