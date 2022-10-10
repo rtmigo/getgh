@@ -9,6 +9,7 @@ import 'package:kt_dart/kt.dart';
 
 import 'exceptions.dart';
 import 'github_urls.dart';
+import 'pool.dart';
 import 'sha.dart';
 
 enum GithubFsEntryType { file, dir }
@@ -140,7 +141,14 @@ class GhNotInstalledException extends ExpectedException {
       : super("`gh` not installed. Get it at https://cli.github.com/");
 }
 
+final _requestLimiter = TaskPool<KtList<GithubFsEntry>>(concurrency: 5);
+
 Future<KtList<GithubFsEntry>> listRemoteEntries(final Endpoint ep,
+        {final String executable = "gh"}) =>
+    _requestLimiter
+        .run(() => _listRemoteEntriesDirect(ep, executable: executable));
+
+Future<KtList<GithubFsEntry>> _listRemoteEntriesDirect(final Endpoint ep,
     {final String executable = "gh"}) async {
   // User-to-server requests are limited to 5,000 requests per hour and
   // per authenticated user (2022, https://bit.ly/3RKcXfn)
@@ -169,7 +177,8 @@ Future<KtList<GithubFsEntry>> listRemoteEntries(final Endpoint ep,
   if (parsed is Map) {
     return [GithubFsEntry((parsed as Map<String, dynamic>).kt)].kt;
   } else {
-    return (parsed as List).kt
+    return (parsed as List)
+        .kt
         .map((item) => GithubFsEntry((item as Map<String, dynamic>).kt));
   }
 }
