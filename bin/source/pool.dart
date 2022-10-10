@@ -72,5 +72,7 @@ class TaskPool<R> {
         _maybeRunTasks();
       });
     }
+
+    assert(_currentlyRunning==concurrency || _tasks.isEmpty);
   }
 }
