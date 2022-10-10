@@ -71,13 +71,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
-  either_dart:
-    dependency: "direct main"
-    description:
-      name: either_dart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
   file:
     dependency: transitive
     description:
@@ -127,6 +120,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
+  kt_dart:
+    dependency: "direct main"
+    description:
+      name: kt_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   lints:
     dependency: "direct dev"
     description:
