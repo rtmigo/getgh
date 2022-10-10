@@ -37,7 +37,7 @@ ArgResults parseArgs(List<String> arguments) {
   return parsedArgs;
 }
 
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   try {
     final parsedArgs = parseArgs(arguments);
     if (parsedArgs["version"] as bool) {
@@ -49,10 +49,10 @@ void main(List<String> arguments) {
     final endpoint = argToEndpoint(parsedArgs.rest[0]);
     switch (parsedArgs.rest.length) {
       case 1:
-        stdout.add(getFileContent(endpoint));
+        stdout.add(await getFileContent(endpoint));
         break;
       case 2:
-        updateLocal(endpoint, parsedArgs.rest[1]);
+        await updateLocal(endpoint, parsedArgs.rest[1]);
         break;
       default:
         throw StateError("Unexpected count of args");
