@@ -111,7 +111,6 @@ Endpoint argToEndpoint(String url) {
   }
   final segments = GithubPathSegments(segmentsList.kt);
 
-  //final branch = branchName(segmentsList);
   final userRepoPath = segments.withoutBlobAndBranch();
   final parts = ["repos"].kt +
       userRepoPath.subList(0, 2) +
@@ -131,7 +130,7 @@ class GhNotInstalledException extends ExpectedException {
       : super("`gh` not installed. Get it at https://cli.github.com/");
 }
 
-Iterable<GithubFsEntry> getEntries(Endpoint ep,
+Iterable<GithubFsEntry> iterRemoteEntries(Endpoint ep,
     {String executable = "gh"}) sync* {
   final ProcessResult r;
   try {

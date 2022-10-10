@@ -82,7 +82,7 @@ Uint8List _getFileContent(GithubFsEntry entry) {
   } else {
     // TODO
     // я не уверен насчёт больших файлов: возможно, там тоже не будет контента
-    theBase64 = getEntries(entry.endpoint).toList().single.contentBase64!;
+    theBase64 = iterRemoteEntries(entry.endpoint).toList().single.contentBase64!;
   }
 
   return base64.decode(theBase64.replaceAll('\n', ''));
@@ -109,7 +109,7 @@ void updateLocal(Endpoint ep, String targetPath) {
 }
 
 GithubFsEntry _getFileEntry(Endpoint ep) {
-  final entries = getEntries(ep).toList();
+  final entries = iterRemoteEntries(ep).toList();
   if (entries.length != 1 || entries.first.type != GithubFsEntryType.file) {
     throw ExpectedException(
         "The address ${ep.string} not correspond to a file");
@@ -149,7 +149,7 @@ void _updateDirRecursive(
   if (processed.contains(sourcePath.string)) {
     throw ArgumentError("This endpoint already processed.");
   }
-  for (final entry in getEntries(sourcePath)) {
+  for (final entry in iterRemoteEntries(sourcePath)) {
     final childName = _childName(sourcePath, entry.endpoint);
 
     final targetBasename = childName ?? entry.name;
