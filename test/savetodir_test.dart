@@ -124,14 +124,14 @@ void main() {
       expect(File(path.join(td!.path, "dir-abc", "c.md")).existsSync(), true);
     });
 
-    test('download whole repo by offical url', () async {
+    test('download whole repo by official url', () async {
       final exitCode = await cliUpdate(
           argToEndpoint(
             // no BLOB or TREE
               "https://github.com/rtmigo/ghfile_test_data"),
           td!.path);
 
-      expect(td!.listSync(recursive: true).length, greaterThan(5));
+      expect(td!.listSync(recursive: true).length, greaterThan(10));
       expect(File(path.join(td!.path, "dir-abc", "a.md")).existsSync(), true);
       expect(File(path.join(td!.path, "dir-abc", "b.md")).existsSync(), true);
       expect(File(path.join(td!.path, "dir-abc", "c.md")).existsSync(), true);

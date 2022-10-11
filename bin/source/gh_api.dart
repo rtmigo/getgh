@@ -141,7 +141,7 @@ class GhNotInstalledException extends ExpectedException {
       : super("`gh` not installed. Get it at https://cli.github.com/");
 }
 
-final _requestLimiter = ParallelScheduler(5); // <KtList<GithubFsEntry>>
+final _requestLimiter = ParallelScheduler(8);
 
 Future<KtList<GithubFsEntry>> listRemoteEntries(final Endpoint ep,
         {final String executable = "gh"}) =>
