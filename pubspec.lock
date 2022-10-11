@@ -204,6 +204,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  schedulers:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: staging
+      resolved-ref: cf239c62ff00a26fe8908b221f8de6f2bffd8b0f
+      url: "https://github.com/rtmigo/schedulers_dart"
+    source: git
+    version: "0.3.1"
   shelf:
     dependency: transitive
     description:
