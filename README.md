@@ -46,7 +46,7 @@ mv -v ./hubget "$HOME/.local/bin/"
 
 ## File to file
 
-Download remote `file.sh` to local `localname.sh`:
+Download remote `file.txt` to local file `localname.txt`:
 
 ```bash
 hubget https://github.com/user/repo/file.txt localname.txt
@@ -54,7 +54,7 @@ hubget https://github.com/user/repo/file.txt localname.txt
 
 ## File to stdout
 
-Just print the file on terminal:
+Just print the file to terminal:
 
 ```bash
 hubget https://github.com/user/repo/file.txt
@@ -69,16 +69,16 @@ hubget https://github.com/user/repo/file.tgz | tar -xz
 
 ## File into directory
 
-Download remote `file.sh` to local `targetdir/file.sh`:
+Download remote `file.txt` to local `targetdir/file.txt`:
 
 ```bash
-hubget https://github.com/user/repo/file.sh targetdir/
+hubget https://github.com/user/repo/file.txt targetdir/
 ```
 
 Or into the current working directory (note the dot at the end):
 
 ```bash
-hubget https://github.com/user/repo/file.sh .
+hubget https://github.com/user/repo/file.txt .
 ```
 
 ## Directory to directory
