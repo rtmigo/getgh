@@ -38,7 +38,7 @@ ArgResults parseArgs(final List<String> arguments) {
   return parsedArgs;
 }
 
-Future<int> cliUpdate(final Endpoint endpoint, final String target) async {
+Future<int> cliUpdate(final RepoEndpoint endpoint, final String target) async {
   final results = await updateLocal(endpoint, target);
   final ok = results.filter((p0) => p0.success).size;
   final errors = results.size - ok;

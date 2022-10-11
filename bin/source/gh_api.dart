@@ -47,13 +47,13 @@ class GithubFsEntry {
   /// То есть, хост + эндпоинт.
   String get url => this.data["url"] as String;
 
-  Endpoint get endpoint {
+  RepoEndpoint get endpoint {
     final u = this.url;
     final prefix = "https://api.github.com";
     if (!u.startsWith(prefix)) {
       throw ArgumentError.value(u);
     }
-    return Endpoint(u.substring(prefix.length));
+    return RepoEndpoint(u.substring(prefix.length));
   }
 
   GithubFsEntryType get type {
@@ -89,10 +89,10 @@ class FileResponse extends ApiResponse {
   FileResponse({required this.sha, required this.contentBase64});
 }
 
-class Endpoint {
+class RepoEndpoint {
   final String string;
 
-  Endpoint(this.string) {
+  RepoEndpoint(this.string) {
     if (!this.string.startsWith("/repos/")) {
       throw ArgumentError(this.string);
     }
@@ -108,12 +108,12 @@ class Endpoint {
 
 /// На входе у нас аргумент программы. Скорее всего, заданный как http-адрес
 /// файла. На выходе будет "endpoint", к которому умеет обращаться api.
-Endpoint argToEndpoint(final String url) {
+RepoEndpoint argToEndpoint(final String url) {
   // IN: https://github.com/rtmigo/cicd/blob/dev/stub.py
   // OUT: /repos/rtmigo/cicd/contents/stub.py
 
   if (url.startsWith("/repos/")) {
-    return Endpoint(url);
+    return RepoEndpoint(url);
   }
 
   final segmentsList = Uri.parse(url).pathSegments;
@@ -130,9 +130,9 @@ Endpoint argToEndpoint(final String url) {
   final allExceptBranch = "/${parts.joinToString(separator: "/")}";
 
   if (segments.branch != null) {
-    return Endpoint("$allExceptBranch?ref=${segments.branch}");
+    return RepoEndpoint("$allExceptBranch?ref=${segments.branch}");
   } else {
-    return Endpoint(allExceptBranch);
+    return RepoEndpoint(allExceptBranch);
   }
 }
 
@@ -143,12 +143,12 @@ class GhNotInstalledException extends ExpectedException {
 
 final _requestLimiter = ParallelScheduler(8);
 
-Future<KtList<GithubFsEntry>> listRemoteEntries(final Endpoint ep,
+Future<KtList<GithubFsEntry>> listRemoteEntries(final RepoEndpoint ep,
         {final String executable = "gh"}) =>
     _requestLimiter
         .run(() => _listRemoteEntriesDirect(ep, executable: executable)).result;
 
-Future<KtList<GithubFsEntry>> _listRemoteEntriesDirect(final Endpoint ep,
+Future<KtList<GithubFsEntry>> _listRemoteEntriesDirect(final RepoEndpoint ep,
     {final String executable = "gh"}) async {
   // User-to-server requests are limited to 5,000 requests per hour and
   // per authenticated user (2022, https://bit.ly/3RKcXfn)
