@@ -1,4 +1,4 @@
-# [hubget](https://github.com/rtmigo/hubget) #experimental  
+# [hubget](https://github.com/rtmigo/hubget)  
 
 CLI for Linux, MacOS, Windows
 
