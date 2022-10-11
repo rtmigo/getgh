@@ -18,8 +18,8 @@ dependencies:
   http: ^0.13.5
   kt_dart: ^1.0.0
   path: ^1.8.2
-  schedulers:
-    git:
-      url: https://github.com/rtmigo/schedulers_dart
-      ref: staging
+  schedulers: ^1.0.0
+  #    git:
+  #      url: https://github.com/rtmigo/schedulers_dart
+  #      ref: staging
 
