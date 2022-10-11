@@ -9,7 +9,7 @@ import 'package:kt_dart/kt.dart';
 
 import 'exceptions.dart';
 import 'github_urls.dart';
-import 'pool.dart';
+import 'package:schedulers/schedulers.dart';
 import 'sha.dart';
 
 enum GithubFsEntryType { file, dir }
@@ -141,12 +141,12 @@ class GhNotInstalledException extends ExpectedException {
       : super("`gh` not installed. Get it at https://cli.github.com/");
 }
 
-final _requestLimiter = ConcurrentScheduler<KtList<GithubFsEntry>>(concurrency: 5);
+final _requestLimiter = ParallelScheduler(5); // <KtList<GithubFsEntry>>
 
 Future<KtList<GithubFsEntry>> listRemoteEntries(final Endpoint ep,
         {final String executable = "gh"}) =>
     _requestLimiter
-        .run(() => _listRemoteEntriesDirect(ep, executable: executable));
+        .run(() => _listRemoteEntriesDirect(ep, executable: executable)).result;
 
 Future<KtList<GithubFsEntry>> _listRemoteEntriesDirect(final Endpoint ep,
     {final String executable = "gh"}) async {
