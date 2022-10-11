@@ -1,6 +1,6 @@
 # ! IT SHOULD NOT BE RUN ON PULL REQUESTS
 
-name: unittest
+name: build_and_release
 
 on:
   push:
