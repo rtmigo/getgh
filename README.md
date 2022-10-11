@@ -20,11 +20,13 @@ here](https://github.com/cli/cli#installation).
 
 ## Install `hubget`
 
-Get the latest `hubget` binary from the
-[Releases](https://github.com/rtmigo/hubget/releases) page
+Download and extract a binary executable [release](https://github.com/rtmigo/hubget/releases):
 
+* [for macOS](https://github.com/rtmigo/hubget/releases/latest/download/hubget_darwin_amd64.tgz)
+* [for Linux](https://github.com/rtmigo/hubget/releases/latest/download/hubget_linux_amd64.tgz)
+* [for Windows](https://github.com/rtmigo/hubget/releases/latest/download/hubget_windows_amd64.zip)
 
-<details><summary>Alternatively, get the release via the command line</summary>
+<details><summary>Alternatively, get the executable via the command line</summary>
 
 ### Linux
 
