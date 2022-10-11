@@ -12,8 +12,8 @@ CLI for Linux, MacOS, Windows
 
 ## Make sure you have `gh`
 
-`hubget` will use `gh` internally. So you not need to mess with additional
-authentication as long as you have `gh`.
+`hubget` will use `gh` internally. So you won't have to bother with 
+authentication when you have `gh` configured.
 
 `gh` is an official [GitHub CLI](https://cli.github.com/). Install it [from
 here](https://github.com/cli/cli#installation).
@@ -49,7 +49,7 @@ mv -v ./hubget "$HOME/.local/bin/"
 Download remote `file.sh` to local `localname.sh`:
 
 ```bash
-hubget https://github.com/user/repo/file.sh localname.sh
+hubget https://github.com/user/repo/file.txt localname.txt
 ```
 
 ## File to stdout
@@ -57,14 +57,14 @@ hubget https://github.com/user/repo/file.sh localname.sh
 Just print the file on terminal:
 
 ```bash
-hubget https://github.com/user/repo/file.sh
+hubget https://github.com/user/repo/file.txt
 ```
 
-Or pipe to other process. For example, run the bash script without
-creating a file:
+Or pipe to other process. For example, extract the file contents without
+saving the archive a file:
 
 ```bash
-hubget https://github.com/user/repo/file.sh | bash
+hubget https://github.com/user/repo/file.tgz | tar -xz
 ```
 
 ## File into directory

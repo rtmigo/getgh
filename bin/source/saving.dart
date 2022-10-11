@@ -52,7 +52,7 @@ bool _pathsEqualExceptRepoName<T>(final KtList<T> a, final KtList<T> b) {
 /// Если пути [parent] и [child] одинаковы, возвращает `null`. Иначе полагаем,
 /// что [child] расположен непосредственно внутри [parent] и возвращаем
 /// локальное имя [child].
-String? _childName(final Endpoint parent, final Endpoint child) {
+String? _childName(final RepoEndpoint parent, final RepoEndpoint child) {
   final parentSegments = Uri.parse(parent.string).pathSegments;
   final childSegments = Uri.parse(child.string).pathSegments;
 
@@ -111,15 +111,15 @@ class HttpErrorException extends ExpectedException {
 }
 
 class FileContentNotAvailableException extends ExpectedException {
-  FileContentNotAvailableException(final Endpoint ep)
+  FileContentNotAvailableException(final RepoEndpoint ep)
       : super("File content not available");
 }
 
-Future<Uint8List> getFileContent(final Endpoint ep) async =>
+Future<Uint8List> getFileContent(final RepoEndpoint ep) async =>
     _getFileContent(await _getFileEntry(ep));
 
-Future<KtList<UpdateResult>> updateLocal(
-    final Endpoint ep, final String targetPath) async {
+Future<KtList<FileUpdateResult>> updateLocal(
+    final RepoEndpoint ep, final String targetPath) async {
   if (targetPath.endsWith(pathlib.separator)) {
     Directory(targetPath).createSync(recursive: true);
   }
@@ -133,11 +133,11 @@ Future<KtList<UpdateResult>> updateLocal(
     // У нас нет целевого пути, и не было слэша. Мы полагаем, что там имя
     // файла. Но если GitHub сообщит, что там каталог, мы могли бы изменить
     // мнение
-    return inFutureWrapToList(ep, ()=>_updateFile(ep, File(targetPath)));
+    return _inFutureWrapToList(ep, () => _updateFile(ep, File(targetPath)));
   }
 }
 
-Future<GithubFsEntry> _getFileEntry(final Endpoint ep) async {
+Future<GithubFsEntry> _getFileEntry(final RepoEndpoint ep) async {
   final entries = (await listRemoteEntries(ep));
   if (entries.size != 1 || entries.first().type != GithubFsEntryType.file) {
     throw ExpectedException(
@@ -146,7 +146,7 @@ Future<GithubFsEntry> _getFileEntry(final Endpoint ep) async {
   return entries.single();
 }
 
-Future<bool> _updateFile(final Endpoint ep, final File target) async =>
+Future<bool> _updateFile(final RepoEndpoint ep, final File target) async =>
     _updateFileByEntry(await _getFileEntry(ep), target);
 
 Future<bool> _updateFileByEntry(
@@ -179,21 +179,23 @@ Future<bool> _updateFileByEntry(
   return true;
 }
 
-Future<KtList<UpdateResult>> _updateDir(
-        final Endpoint ep, final Directory target) =>
+Future<KtList<FileUpdateResult>> _updateDir(
+        final RepoEndpoint ep, final Directory target) =>
     _updateDirRecursive(ep, target, KtSet<String>.empty());
 
 /// Аргумент [processed] нужен только для того, чтобы предотвратить
 /// бесконечную рекурсию по ошибке.
-Future<KtList<UpdateResult>> _updateDirRecursive(final Endpoint sourcePath,
-    final Directory target, final KtSet<String> processed) async {
+Future<KtList<FileUpdateResult>> _updateDirRecursive(
+    final RepoEndpoint sourcePath,
+    final Directory target,
+    final KtSet<String> processed) async {
   // TODO Проверять sha каталогов (не только файлов)
 
   if (processed.contains(sourcePath.string)) {
     throw ArgumentError("This endpoint already processed.");
   }
 
-  final futures = List<Future<KtList<UpdateResult>>>.empty(growable: true);
+  final futures = List<Future<KtList<FileUpdateResult>>>.empty(growable: true);
 
   for (final entry in (await listRemoteEntries(sourcePath)).iter) {
     final childName = _childName(sourcePath, entry.endpoint);
@@ -211,7 +213,7 @@ Future<KtList<UpdateResult>> _updateDirRecursive(final Endpoint sourcePath,
             processed.plusElement(sourcePath.string)));
         break;
       case GithubFsEntryType.file:
-        futures.add(inFutureWrapToList(
+        futures.add(_inFutureWrapToList(
             entry.endpoint, () => _updateFileByEntry(entry, File(targetPath))));
         break;
       default:
@@ -219,24 +221,26 @@ Future<KtList<UpdateResult>> _updateDirRecursive(final Endpoint sourcePath,
     }
   }
 
-  final KtList<KtList<UpdateResult>> childResults =
+  final KtList<KtList<FileUpdateResult>> childResults =
       (await Future.wait(futures, eagerError: true)).kt;
   return childResults.flatten();
 }
 
 /// Преобразует результат отдельного запроса отдельного файла (возвращающий
-/// bool) - в список
-Future<KtList<UpdateResult>> inFutureWrapToList(
-  final Endpoint endpoint,
+/// bool) - в список, аналогичный результату обработки множества файлов.
+///
+/// В перспективе [FileUpdateResult] станет подробнее, а функции, обновляющие
+/// файлы, будут сами возвращать такой объект вместо `bool`. Тогда эта корявая
+/// обёртка не потребуется.
+Future<KtList<FileUpdateResult>> _inFutureWrapToList(
+  final RepoEndpoint endpoint,
   final Future<bool> Function() block,
-) async {
-  return [UpdateResult(endpoint, await block())].kt;
-}
+) =>
+    block().then((final value) => [FileUpdateResult(endpoint, value)].kt);
 
-/// Результат обновления отдельного файл
-class UpdateResult {
-  final Endpoint endpoint;
+class FileUpdateResult {
+  final RepoEndpoint endpoint;
   final bool success;
 
-  UpdateResult(this.endpoint, this.success);
+  FileUpdateResult(this.endpoint, this.success);
 }

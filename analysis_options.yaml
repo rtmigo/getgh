@@ -20,7 +20,6 @@ linter:
     unawaited_futures: true
     unnecessary_await_in_return: true
 
-
     prefer_const_declarations: true
     prefer_final_locals: true
     prefer_final_fields: true
@@ -33,4 +32,3 @@ linter:
     unnecessary_lambdas: true
     use_decorated_box: true
     use_colored_box: true
-
