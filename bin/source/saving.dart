@@ -241,6 +241,7 @@ Future<KtList<FileUpdateResult>> _inFutureWrapToList(
 class FileUpdateResult {
   final RepoEndpoint endpoint;
   final bool success;
+  // TODO возвращать статус: обновлён или нет (и печатать сводную статистику)
 
   FileUpdateResult(this.endpoint, this.success);
 }
