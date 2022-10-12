@@ -51,7 +51,7 @@ mv -v ./hubget "$HOME/.local/bin/"
 Download remote `file.txt` to local file `localname.txt`:
 
 ```bash
-hubget https://github.com/user/repo/file.txt localname.txt
+hubget https://github.com/owner/repo/blob/branch/file.txt localname.txt
 ```
 
 ## File to stdout
@@ -59,14 +59,14 @@ hubget https://github.com/user/repo/file.txt localname.txt
 Just print the file to terminal:
 
 ```bash
-hubget https://github.com/user/repo/file.txt
+hubget https://github.com/owner/repo/blob/branch/file.txt
 ```
 
 Or pipe to other process. For example, extract the file contents without
 saving the archive a file:
 
 ```bash
-hubget https://github.com/user/repo/file.tgz | tar -xz
+hubget https://github.com/owner/repo/blob/branch/file.tgz | tar -xz
 ```
 
 ## File into directory
@@ -74,13 +74,13 @@ hubget https://github.com/user/repo/file.tgz | tar -xz
 Download remote `file.txt` to local `targetdir/file.txt`:
 
 ```bash
-hubget https://github.com/user/repo/file.txt targetdir/
+hubget https://github.com/owner/repo/blob/branch/file.txt targetdir/
 ```
 
 Or into the current working directory (note the dot at the end):
 
 ```bash
-hubget https://github.com/user/repo/file.txt .
+hubget https://github.com/owner/repo/blob/branch/file.txt .
 ```
 
 ## Directory to directory
@@ -88,7 +88,7 @@ hubget https://github.com/user/repo/file.txt .
 Download all files from remote `dir` storing them inside local `targetdir`:
 
 ```bash
-hubget https://github.com/user/repo/dir/ targetdir/
+hubget https://github.com/owner/repo/tree/branch/dir targetdir/
 ```
 
 # Disclaimer
