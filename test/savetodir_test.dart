@@ -25,19 +25,21 @@ void main() {
   });
 
   if (true) {
-    test('download file to file', () async {
-      final target = File(path.join(td!.path, "a.md"));
+    group('download file to file', () {
+      test('from type/hive', () async {
+        final target = File(path.join(td!.path, "a.md"));
 
-      expect(td!.listSync().length, 0);
-      expect(target.existsSync(), false);
+        expect(td!.listSync().length, 0);
+        expect(target.existsSync(), false);
 
-      await cliUpdate(
-          argToEndpoint(
-              "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
-          target.path);
+        await cliUpdate(
+            argToEndpoint(
+                "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/a.md"),
+            target.path);
 
-      expect(td!.listSync().length, 1);
-      expect(target.existsSync(), true);
+        expect(td!.listSync().length, 1);
+        expect(target.existsSync(), true);
+      });
     });
 
     test('download file to non-existent dir (target ends with slash)', () async {
@@ -88,7 +90,7 @@ void main() {
     test('download flat dir', () async {
       final exitCode = await cliUpdate(
           argToEndpoint(
-              "https://github.com/rtmigo/ghfile_test_data/blob/dev/dir-abc/"),
+              "https://github.com/rtmigo/hubget_test_data/tree/dev/dir-abc"),
           td!.path);
 
       expect(td!.listSync(recursive: true).length, 3);
